@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { register } from "../../services/authService.js";
+import styles from "./RegisterForm.module.css";
 
 function RegisterForm() {
     const [email, setEmail] = useState("");
@@ -37,41 +38,37 @@ function RegisterForm() {
 
     return (
     
-    <form id="registerForm" onSubmit={handleSubmit}>
-
-      Email
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <label className={styles.label} htmlFor="emailInput">Email</label>
       <input
+        className={styles.input}
         type="text"
         id="emailInput"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
       />
 
-      <br />
-
-      Password
+      <label className={styles.label} htmlFor="passwordInput">Password</label>
       <input
+        className={styles.input}
         type="password"
         id="passwordInput"
         value={password}
         onChange={(event) => setPassword(event.target.value)}
       />
 
-      <br />
-
-      Username
+      <label className={styles.label} htmlFor="usernameInput">Username</label>
       <input
+        className={styles.input}
         type="text"
         id="usernameInput"
         value={name}
         onChange={(event) => setName(event.target.value)}
       />
 
-      <br />
+      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
-      {errorMessage && <p>{errorMessage}</p>}
-
-      <button type="submit">Register</button>
+      <button className={styles.button} type="submit">Register</button>
     </form>
   );
 }
