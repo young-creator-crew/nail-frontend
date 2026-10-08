@@ -1,0 +1,185 @@
+.header {
+  min-height: 91px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  width: min(100% - 48px, 1240px);
+  min-height: 91px;
+  margin: 0 auto;
+}
+
+.leftArea,
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.desktopNavigation {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.navLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 91px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 160ms ease;
+}
+
+.navLink:hover,
+.navLink.active {
+  color: var(--color-action-primary);
+}
+
+.navLink.active::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--color-action-primary);
+  content: "";
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo img {
+  width: 29px;
+  height: 36px;
+  filter: var(--logo-filter, none);
+}
+
+.actions {
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.themeButton,
+.menuButton,
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  color: var(--color-text-primary);
+}
+
+.themeButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.themeButton:hover {
+  background: var(--color-surface);
+}
+
+.accountLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.accountLink img {
+  width: 18px;
+  height: 18px;
+  filter: var(--icon-filter, none);
+}
+
+.menuButton {
+  display: none;
+}
+
+.themeButton:focus-visible,
+.menuButton:focus-visible,
+.navLink:focus-visible,
+.accountLink:focus-visible,
+.logo:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+:global([data-theme="dark"]) .logo img,
+:global([data-theme="dark"]) .accountLink img,
+:global([data-theme="dark"]) .menuButton img {
+  filter: invert(1);
+}
+
+@media (max-width: 767px) {
+  .header,
+  .content {
+    min-height: 78px;
+  }
+
+  .content {
+    width: min(100% - 32px, 1240px);
+    gap: 12px;
+  }
+
+  .desktopNavigation {
+    display: none;
+  }
+
+  .menuButton {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+  }
+
+  .menuButton img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .logo img {
+    width: 29px;
+    height: 36px;
+  }
+
+  .actions {
+    gap: 4px;
+  }
+
+  .accountLink {
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+  }
+
+  .accountLink span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+}

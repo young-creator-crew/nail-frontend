@@ -1,5 +1,8 @@
+import { Navbar } from "../widgets/Navbar/Navbar"
+import "./styles/index.css"
+
 function App() {
-  return null
+  return <Navbar />
 }
 
 export default App
