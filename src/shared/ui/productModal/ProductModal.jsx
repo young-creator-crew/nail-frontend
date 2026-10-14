@@ -9,10 +9,12 @@ export function ProductModal({
   price = 80,
   href = "#",
 }) {
-  const formattedPrice = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(price)
+  const formattedPrice = typeof price === "number"
+    ? new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(price)
+    : price
 
   return (
     <a className={styles.card} href={href} aria-label={`${name}: ver detalhes`}>
