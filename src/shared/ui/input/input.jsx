@@ -6,6 +6,7 @@ export function Input({
   id,
   className = "",
   wrapperClassName = "",
+  endAdornment,
   ...props
 }) {
   const generatedId = useId()
@@ -20,7 +21,12 @@ export function Input({
       <label className={styles.label} htmlFor={inputId}>
         {label}
       </label>
-      <input id={inputId} className={fieldClassName} {...props} />
+      <div className={styles.control}>
+        <input id={inputId} className={fieldClassName} {...props} />
+        {endAdornment ? (
+          <span className={styles.adornment}>{endAdornment}</span>
+        ) : null}
+      </div>
     </div>
   )
 }
