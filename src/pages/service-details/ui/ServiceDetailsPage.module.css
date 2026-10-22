@@ -1,0 +1,158 @@
+.page {
+  min-height: calc(100vh - 223px);
+  padding: 28px 0 48px;
+}
+
+.content {
+  display: grid;
+  gap: 16px;
+  width: min(100% - 44px, 1120px);
+  margin: 0 auto;
+}
+
+.backLink {
+  width: max-content;
+}
+
+.service {
+  display: grid;
+  gap: 24px;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 0.92;
+  border-radius: 20px;
+  background: var(--color-border);
+  object-fit: cover;
+}
+
+.details {
+  display: grid;
+  align-content: start;
+}
+
+.category {
+  margin-bottom: 10px;
+  color: var(--color-text-primary);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+}
+
+.name {
+  font-size: clamp(34px, 9vw, 40px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.price {
+  margin-top: 16px;
+  color: var(--color-action-primary);
+  font-size: 23px;
+  line-height: 1.4;
+}
+
+.description {
+  margin-top: 28px;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.booking {
+  display: grid;
+  gap: 28px;
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid var(--color-border);
+}
+
+.bookingDescription {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.bookingButton {
+  width: 100%;
+  min-height: 48px;
+  justify-content: center;
+  gap: 24px;
+}
+
+.bookingButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.notFound {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 48px 0;
+  color: var(--color-text-secondary);
+}
+
+.notFoundTitle {
+  color: var(--color-text-primary);
+  font-size: 32px;
+  font-weight: 400;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: 44px 0 72px;
+  }
+
+  .content {
+    gap: 24px;
+    width: min(100% - 64px, 1120px);
+  }
+
+  .service {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 80px);
+  }
+
+  .image {
+    aspect-ratio: 0.95;
+  }
+
+  .name {
+    font-size: clamp(40px, 5vw, 56px);
+  }
+
+  .price {
+    margin-top: 18px;
+    font-size: 25px;
+  }
+
+  .description {
+    margin-top: 30px;
+    font-size: 16px;
+  }
+
+  .booking {
+    gap: 28px;
+    margin-top: 30px;
+    padding-top: 26px;
+  }
+
+  .bookingDescription {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  .content {
+    width: min(100% - 32px, 1120px);
+  }
+
+  .image {
+    border-radius: 16px;
+  }
+}
