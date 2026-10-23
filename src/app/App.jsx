@@ -1,5 +1,10 @@
 import { Navbar } from "../widgets/Navbar/Navbar"
 import { Footer } from "../widgets/Footer/Footer"
+import { AppointmentPage } from "../pages/appointment/ui/AppointmentPage"
+import "./styles/index.css"
+
+function App() {
+  const isAppointmentRoute = window.location.pathname.replace(/\/+$/, "") === "/agendamento"
 import { serviceDetails } from "../entities/service/model/serviceDetails"
 import { ServiceDetailsPage } from "../pages/service-details/ui/ServiceDetailsPage"
 import "./styles/index.css"
@@ -16,6 +21,7 @@ function App() {
   return (
     <>
       <Navbar />
+      {isAppointmentRoute && <AppointmentPage />}
       {isServiceDetailsRoute && <ServiceDetailsPage service={service} />}
 import { ServicesPage } from "../pages/services/ui/ServicesPage"
 import "./styles/index.css"
