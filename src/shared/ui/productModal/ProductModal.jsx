@@ -5,6 +5,7 @@ export function ProductModal({
   description = "Cor, detalhes e personalidade em cada unha.",
   image,
   isAdmin = false,
+  imageAspectRatio = 1.25,
   name = "Nail Art",
   price = 80,
   href = "#",
@@ -16,7 +17,7 @@ export function ProductModal({
 
   return (
     <a className={styles.card} href={href} aria-label={`${name}: ver detalhes`}>
-      <div className={styles.imageWrapper}>
+      <div className={styles.imageWrapper} style={{ aspectRatio: imageAspectRatio }}>
         {image ? (
           <img className={styles.image} src={image} alt="" />
         ) : (
