@@ -1,5 +1,6 @@
 import { Navbar } from "../widgets/Navbar/Navbar"
 import { Footer } from "../widgets/Footer/Footer"
+import { Home } from "../pages/Home/Home"
 import { AdminAgenda } from "../pages/AdminAgenda/AdminAgenda"
 import { Perfil } from "../pages/Perfil/Perfil"
 import "./styles/index.css"
@@ -13,6 +14,7 @@ function App() {
     <>
       <Navbar role={isAdmin ? "admin" : "client"} userName={isAdmin ? "[NOME DA ADMINISTRADORA]" : "[NOME DO CLIENTE]"} />
       {Page ? <Page /> : null}
+      <Home />
       <Footer />
     </>
   )
