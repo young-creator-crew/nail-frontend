@@ -52,6 +52,7 @@ export function EditService() {
   const handleSubmit = async (updatedService) => {
     await updateService(serviceId, {
       name: updatedService.name,
+      category: updatedService.category,
       description: updatedService.description,
       price: updatedService.price,
       estimatedDurationMinutes: updatedService.estimatedDurationMinutes,

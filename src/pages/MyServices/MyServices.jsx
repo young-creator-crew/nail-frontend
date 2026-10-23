@@ -72,11 +72,7 @@ export function MyServices() {
           <section className={styles.services} aria-label="Serviços cadastrados">
             {services.map((service) => (
               <ProductModal
-                category={
-                  service.estimatedDurationMinutes
-                    ? `${service.estimatedDurationMinutes} min`
-                    : undefined
-                }
+                category={service.category}
                 description={service.description}
                 href={`/meus-servicos/editar?id=${service.id}`}
                 image={service.imageUrl}

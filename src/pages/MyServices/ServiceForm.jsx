@@ -22,6 +22,7 @@ export function ServiceForm({
 }) {
   const [form, setForm] = useState(() => ({
     name: initialService?.name ?? "",
+    category: initialService?.category ?? "",
     description: initialService?.description ?? "",
     price: initialService?.price ?? "",
     estimatedDurationMinutes: initialService?.estimatedDurationMinutes ?? "",
@@ -165,6 +166,15 @@ export function ServiceForm({
               onChange={updateField}
               required
               value={form.name}
+            />
+
+            <Input
+              autoComplete="off"
+              label="Categoria"
+              name="category"
+              onChange={updateField}
+              placeholder="Ex.: Manicure"
+              value={form.category}
             />
 
             <div className={styles.field}>

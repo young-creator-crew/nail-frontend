@@ -5,6 +5,7 @@ export function AddService() {
   const handleSubmit = async (service) => {
     const formData = new FormData()
     formData.append("name", service.name)
+    formData.append("category", service.category)
     formData.append("description", service.description)
     formData.append("price", String(service.price))
     formData.append(
