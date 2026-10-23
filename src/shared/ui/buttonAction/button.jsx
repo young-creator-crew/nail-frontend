@@ -5,22 +5,21 @@ export function ButtonAction({
   icon = "↗",
   iconPosition = "right",
   className = "",
+  href,
   type = "button",
   ...props
 }) {
   const buttonClassName = [styles.button, className].filter(Boolean).join(" ")
-  const iconElement = (
-    <span className={styles.icon} aria-hidden="true">
-      {icon}
-    </span>
-  )
+  const Component = href ? "a" : "button"
+  const componentProps = href ? { href, ...props } : { type, ...props }
 
   return (
-    <button className={buttonClassName} type={type} {...props}>
-      {iconPosition === "left" && iconElement}
+    <Component className={buttonClassName} {...componentProps}>
       <span>{children}</span>
-      {iconPosition !== "left" && iconElement}
-    </button>
+      <span className={styles.icon} aria-hidden="true">
+        {icon}
+      </span>
+    </Component>
   )
 }
 

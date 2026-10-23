@@ -1,0 +1,327 @@
+.booking {
+  display: grid;
+  gap: 32px;
+}
+
+.serviceSummary {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 94px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--color-surface);
+}
+
+.serviceImage {
+  width: 50px;
+  height: 64px;
+  border-radius: 7px;
+  background: var(--color-border);
+  object-fit: cover;
+}
+
+.serviceText {
+  min-width: 0;
+}
+
+.serviceEyebrow {
+  margin-bottom: 4px;
+  color: var(--color-text-secondary);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.serviceName {
+  overflow: hidden;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.servicePrice {
+  color: var(--color-action-primary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.calendarSection {
+  display: grid;
+  gap: 22px;
+}
+
+.sectionTitle {
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.monthNavigation {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  min-height: 44px;
+}
+
+.monthTitle {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.monthButton {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-text-primary);
+  font-size: 27px;
+  line-height: 1;
+}
+
+.monthButton:hover:not(:disabled) {
+  background: var(--color-surface);
+}
+
+.monthButton:disabled {
+  color: var(--color-control-border);
+  cursor: not-allowed;
+}
+
+.monthButton:focus-visible,
+.dayButton:focus-visible,
+.timeButton:focus-visible {
+  outline: 2px solid var(--color-action-primary);
+  outline-offset: 2px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px 0;
+  text-align: center;
+}
+
+.weekday {
+  display: grid;
+  min-height: 38px;
+  place-items: center;
+  color: var(--color-text-secondary);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dayCell,
+.emptyDay {
+  display: grid;
+  min-height: 46px;
+  place-items: center;
+}
+
+.dayButton {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.dayButton:hover:not(:disabled):not(.daySelected) {
+  background: var(--color-surface);
+}
+
+.dayButton.dayUnavailable {
+  color: var(--color-control-border);
+  cursor: not-allowed;
+}
+
+.dayButton.daySelected {
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
+}
+
+.availabilityNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.availabilityNote > span {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: var(--color-action-primary);
+}
+
+.timeSection {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 14px;
+  background: var(--color-surface);
+}
+
+.timeHeading {
+  display: grid;
+  gap: 12px;
+}
+
+.timeHeading svg {
+  width: 22px;
+  height: 22px;
+  color: var(--color-action-primary);
+}
+
+.timePrompt {
+  min-height: 28px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.timeOptions {
+  display: grid;
+  gap: 12px;
+}
+
+.timeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.timeButton {
+  min-width: 66px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--color-control-border);
+  border-radius: 7px;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.timeButton:hover:not(.timeSelected) {
+  border-color: var(--color-action-primary);
+}
+
+.timeButton.timeSelected {
+  border-color: var(--color-action-primary);
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
+}
+
+.confirmation {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.confirmButton {
+  width: 100%;
+  min-height: 48px;
+  justify-content: center;
+  gap: 18px;
+}
+
+.confirmButton:disabled {
+  background: var(--color-action-primary);
+  opacity: 0.38;
+}
+
+.confirmButton > span:last-child {
+  font-size: 20px;
+}
+
+.reservationNote {
+  min-height: 18px;
+  color: var(--color-text-secondary);
+  font-size: 9px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .booking {
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    align-items: start;
+    column-gap: clamp(36px, 7vw, 88px);
+    row-gap: 36px;
+  }
+
+  .serviceSummary {
+    grid-column: 1 / -1;
+    grid-template-columns: 58px minmax(0, 1fr) auto;
+    width: min(100%, 520px);
+    min-height: 96px;
+    padding: 14px 18px;
+  }
+
+  .serviceImage {
+    width: 58px;
+    height: 66px;
+  }
+
+  .calendarSection {
+    gap: 20px;
+  }
+
+  .sectionTitle {
+    font-size: 29px;
+  }
+
+  .weekday {
+    font-size: 9px;
+  }
+
+  .dayCell,
+  .emptyDay {
+    min-height: 52px;
+  }
+
+  .dayButton {
+    width: 42px;
+    height: 42px;
+  }
+
+  .timeSection {
+    gap: 20px;
+    padding: 28px;
+  }
+}
+
+@media (max-width: 360px) {
+  .serviceSummary {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .serviceImage {
+    width: 44px;
+    height: 58px;
+  }
+
+  .servicePrice {
+    font-size: 11px;
+  }
+
+  .timeSection {
+    padding: 18px;
+  }
+}
