@@ -21,7 +21,7 @@
 
 .imageWrapper {
   position: relative;
-  aspect-ratio: 1.25;
+  aspect-ratio: 0.96;
   overflow: hidden;
   background: var(--color-border);
 }
@@ -103,9 +103,9 @@
 .footer {
   margin-top: auto;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid var(--color-border);
@@ -131,6 +131,17 @@
   line-height: 1;
 }
 
+@media (min-width: 768px) {
+  .imageWrapper {
+    aspect-ratio: 1.25;
+  }
+
+  .footer {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 12px;
+    
 @media (max-width: 380px) {
   .imageWrapper {
     aspect-ratio: 1.35;

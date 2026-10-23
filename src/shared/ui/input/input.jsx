@@ -5,6 +5,7 @@ export function Input({
   label,
   id,
   className = "",
+  labelClassName = "",
   wrapperClassName = "",
   endAdornment,
   ...props
@@ -18,7 +19,10 @@ export function Input({
 
   return (
     <div className={wrapperClassNames}>
-      <label className={styles.label} htmlFor={inputId}>
+      <label
+        className={[styles.label, labelClassName].filter(Boolean).join(" ")}
+        htmlFor={inputId}
+      >
         {label}
       </label>
       <div className={styles.control}>

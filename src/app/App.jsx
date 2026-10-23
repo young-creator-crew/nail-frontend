@@ -1,5 +1,7 @@
 import { Navbar } from "../widgets/Navbar/Navbar"
 import { Footer } from "../widgets/Footer/Footer"
+import { ServicesPage } from "../pages/services/ui/ServicesPage"
+import "./styles/index.css"
 import { Cadastro } from "../pages/Cadastro/Cadastro"
 import { Login } from "../pages/Login/Login"
 import { Home } from "../pages/Home/Home"
@@ -12,9 +14,12 @@ function App() {
   const isAdmin = currentPath.startsWith("/admin")
   const Page = isAdmin ? AdminAgenda : currentPath === "/perfil" ? Perfil : null
   const Page = currentPath === "/cadastro" ? Cadastro : Login
-
+  const isServicesRoute = window.location.pathname === "/servicos"
+  
   return (
     <>
+       <Navbar />
+      {isServicesRoute && <ServicesPage />}
       <Navbar role={isAdmin ? "admin" : "client"} userName={isAdmin ? "[NOME DA ADMINISTRADORA]" : "[NOME DO CLIENTE]"} />
       {Page ? <Page /> : null}
       <Home />

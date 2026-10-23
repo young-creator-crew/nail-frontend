@@ -1,0 +1,99 @@
+.filters {
+  display: grid;
+  gap: 28px;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.categoryButton {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  white-space: nowrap;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.categoryButton:hover {
+  border-color: var(--color-action-primary);
+}
+
+.categoryButton.selected {
+  border-color: var(--color-action-primary);
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
+}
+
+.categoryButton:focus-visible,
+.searchField .searchControl:focus-visible {
+  outline: 2px solid var(--color-action-primary);
+  outline-offset: 3px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.searchField {
+  flex: 1;
+}
+
+.searchField .searchControl {
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 0;
+  outline-offset: 3px;
+  font-size: 12px;
+}
+
+.searchIcon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.8;
+}
+
+.searchField .searchControl::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.searchField .searchControl::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 768px) {
+  .filters {
+    gap: 20px;
+  }
+
+  .categories {
+    gap: 10px;
+  }
+}
