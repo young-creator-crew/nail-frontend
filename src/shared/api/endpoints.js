@@ -6,4 +6,8 @@ export const API_ENDPOINTS = {
   serviceById: (serviceId) => `${servicesPath}/${serviceId}`,
   bookings: bookingsPath,
   bookingById: (bookingId) => `${bookingsPath}/${bookingId}`,
+  clientProfile: "",
+  updateClientProfile: "",
+  clientAppointments: "",
+  adminAppointments: "",
 }
