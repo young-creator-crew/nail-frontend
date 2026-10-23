@@ -3,6 +3,7 @@ import styles from "./button.module.css"
 export function ButtonAction({
   children,
   icon = "↗",
+  iconPosition = "right",
   className = "",
   href,
   type = "button",

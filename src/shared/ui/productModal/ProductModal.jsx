@@ -1,14 +1,14 @@
 import styles from "./ProductModal.module.css"
 
 export function ProductModal({
-  category = "Nail art",
-  description = "Cor, detalhes e personalidade em cada unha.",
+  category,
+  description,
   image,
   imageAlt = "",
   isAdmin = false,
-  name = "Nail Art",
-  price = 80,
-  href = "#",
+  name,
+  price,
+  href,
 }) {
   const formattedPrice = typeof price === "number"
     ? new Intl.NumberFormat("pt-BR", {
@@ -25,13 +25,13 @@ export function ProductModal({
         ) : (
           <div className={styles.imagePlaceholder} aria-hidden="true" />
         )}
-        <span className={styles.category}>{category}</span>
+        {category && <span className={styles.category}>{category}</span>}
         <span className={styles.arrow} aria-hidden="true">↗</span>
       </div>
 
       <div className={styles.content}>
         <h2 className={styles.name}>{name}</h2>
-        <p className={styles.description}>{description}</p>
+        {description && <p className={styles.description}>{description}</p>}
 
         <div className={styles.footer}>
           <strong className={styles.price}>{formattedPrice}</strong>

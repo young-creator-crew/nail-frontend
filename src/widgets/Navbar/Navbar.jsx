@@ -14,7 +14,7 @@ const adminLinks = [
   { label: "Início", href: "/" },
   { label: "Catálogo", href: "/servicos" },
   { label: "Minha agenda", href: "/admin/agenda" },
-  { label: "Meus serviços", href: "/admin/servicos" },
+  { label: "Meus serviços", href: "/meus-servicos" },
 ]
 
 function getInitialTheme() {

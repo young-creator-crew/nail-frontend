@@ -54,7 +54,7 @@ export function MobileSidebar({ accountHref, isAdmin, isOpen, onClose }) {
               <a href="/" onClick={onClose}>Início</a>
               <a href="/servicos" onClick={onClose}>Catálogo</a>
               <a href="/admin/agenda" onClick={onClose}>Minha agenda</a>
-              <a href="/admin/servicos" onClick={onClose}>Meus serviços</a>
+              <a href="/meus-servicos" onClick={onClose}>Meus serviços</a>
             </>
           ) : (
             <>
