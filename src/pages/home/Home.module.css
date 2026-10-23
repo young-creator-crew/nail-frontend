@@ -1,0 +1,414 @@
+.hero,
+.services,
+.about {
+  width: min(100% - 72px, 1200px);
+  margin: 0 auto;
+  font-family: "Roboto", sans-serif;
+}
+
+.hero {
+  padding: 88px 0 96px;
+}
+
+.heroContent {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(380px, 0.85fr);
+  align-items: center;
+  gap: 82px;
+}
+
+.heroCopy {
+  max-width: 510px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 9px;
+  color: var(--color-text-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.3;
+}
+
+.eyebrow > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-action-primary);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: "Prata", serif;
+  font-weight: 400;
+}
+
+h1 {
+  margin: 24px 0 28px;
+  font-size: clamp(44px, 5.2vw, 68px);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+h1 em {
+  color: var(--color-action-primary);
+  font-style: normal;
+}
+
+.heroDescription {
+  max-width: 390px;
+  margin-bottom: 30px;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.bookingNote {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 23px;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.bookingNote svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-action-primary);
+}
+
+.heroVisual {
+  position: relative;
+  min-height: 545px;
+  overflow: hidden;
+  border-radius: 170px 170px 14px 14px;
+  background: var(--color-surface);
+}
+
+.heroVisual::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 65%, rgb(20 20 20 / 42%));
+  content: "";
+  pointer-events: none;
+}
+
+.heroImagePlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 545px;
+  background: #d9c8d8;
+  color: #67665f;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-align: center;
+}
+
+.heroImagePlaceholder small {
+  margin-top: 8px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+[data-theme="dark"] .heroImagePlaceholder {
+  background: #3b343c;
+  color: #c1bdc3;
+}
+
+.visualCaption,
+.visualCount,
+.visualVertical,
+.visualBadge,
+.visualBurst {
+  position: absolute;
+  z-index: 1;
+}
+
+.visualCaption,
+.visualCount,
+.visualVertical {
+  color: #fdfdf5;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.visualCaption {
+  top: 24px;
+  left: 28px;
+}
+
+.visualCount {
+  right: 24px;
+  bottom: 22px;
+}
+
+.visualVertical {
+  top: 50%;
+  right: 12px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg) translateY(50%);
+}
+
+.visualBadge {
+  bottom: 22px;
+  left: 22px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  max-width: 235px;
+  padding: 16px 18px;
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.visualBadge > span:first-child {
+  color: var(--color-action-primary);
+  font-size: 24px;
+}
+
+.visualBadge strong {
+  display: block;
+  font-weight: 500;
+}
+
+.visualBurst {
+  top: 30px;
+  right: 28px;
+  display: grid;
+  width: 63px;
+  height: 63px;
+  place-items: center;
+  border-radius: 19px;
+  background: #20ad37;
+  color: #fff;
+  font-size: 43px;
+  line-height: 1;
+  transform: rotate(10deg);
+}
+
+.benefits {
+  background: var(--color-surface);
+}
+
+.benefitList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: min(100% - 72px, 1200px);
+  margin: 0 auto;
+}
+
+.benefit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 102px;
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
+.benefitIcon {
+  color: var(--color-action-primary);
+  font-size: 25px;
+}
+
+.services {
+  padding: 94px 0 104px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 42px;
+}
+
+h2 {
+  margin-top: 17px;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.sectionLink,
+.cardMeta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-action-primary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sectionLink svg,
+.cardMeta svg {
+  width: 17px;
+  height: 17px;
+}
+
+.sectionLink:focus-visible {
+  outline: 2px solid var(--color-action-primary);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.about {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  gap: 80px;
+  padding: 83px 0 96px;
+  border-top: 1px solid var(--color-border);
+}
+
+.aboutCopy {
+  align-self: end;
+  max-width: 410px;
+}
+
+.aboutCopy > p {
+  margin-bottom: 27px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+@media (max-width: 1024px) {
+  .heroContent {
+    gap: 44px;
+  }
+
+  .heroVisual {
+    min-height: 470px;
+  }
+
+  .heroVisual > img {
+    min-height: 470px;
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero,
+  .services,
+  .about,
+  .benefitList {
+    width: min(100% - 44px, 1200px);
+  }
+
+  .hero {
+    padding: 54px 0 60px;
+  }
+
+  .heroContent {
+    display: block;
+  }
+
+  .heroCopy {
+    max-width: none;
+  }
+
+  h1 {
+    margin: 20px 0 22px;
+    font-size: clamp(39px, 11vw, 54px);
+  }
+
+  .heroDescription {
+    font-size: 14px;
+  }
+
+  .heroVisual {
+    min-height: 430px;
+    margin-top: 49px;
+    border-radius: 120px 120px 11px 11px;
+  }
+
+  .heroImagePlaceholder {
+    min-height: 430px;
+  }
+
+  .visualBadge {
+    left: 14px;
+    bottom: 15px;
+    max-width: 210px;
+    padding: 13px;
+  }
+
+  .visualVertical {
+    display: none;
+  }
+
+  .benefitList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .benefit {
+    flex-direction: column;
+    gap: 5px;
+    min-height: 94px;
+    padding: 12px 3px;
+    text-align: center;
+    font-size: 9px;
+  }
+
+  .benefitIcon {
+    font-size: 22px;
+  }
+
+  .services {
+    padding: 67px 0 70px;
+  }
+
+  .sectionHeader {
+    align-items: start;
+    flex-direction: column;
+    gap: 22px;
+    margin-bottom: 29px;
+  }
+
+  h2 {
+    font-size: 34px;
+  }
+
+  .cardGrid {
+    gap: 12px;
+  }
+
+  .about {
+    display: block;
+    padding: 61px 0 68px;
+  }
+
+  .aboutCopy {
+    margin-top: 32px;
+  }
+}
