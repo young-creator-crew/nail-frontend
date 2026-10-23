@@ -18,6 +18,10 @@
   transition: background-color 200ms ease;
 }
 
+.iconLeft {
+  flex-direction: row-reverse;
+}
+
 .button:hover:not(:disabled) {
   background: var(--color-action-primary-hover);
 }

@@ -11,10 +11,10 @@ const visitorLinks = [
 ]
 
 const adminLinks = [
-  { label: "Início", href: "/" },
-  { label: "Catálogo", href: "/servicos" },
+  { label: "Início", href: "/admin" },
+  { label: "Catálogo", href: "/admin/servicos" },
   { label: "Minha agenda", href: "/admin/agenda" },
-  { label: "Meus serviços", href: "/meus-servicos" },
+  { label: "Meus serviços", href: "/admin/meus-servicos" },
 ]
 
 function getInitialTheme() {
@@ -39,13 +39,18 @@ export function Navbar({ role = "visitor", userName = "" }) {
   const isAdmin = role === "admin"
   const links = isAdmin ? adminLinks : visitorLinks
   const accountHref = isAdmin
-    ? "/admin/agenda"
+    ? "/admin/perfil"
     : role === "client"
       ? "/perfil"
       : "/entrar"
   const accountLabel = isAdmin || role === "client"
     ? userName || (isAdmin ? "Minha conta" : "Meu perfil")
     : "Minha conta"
+  const mobileAccountLabel = role === "visitor"
+    ? "Entrar"
+    : role === "client"
+      ? "Meu perfil"
+      : "Minha conta"
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -96,7 +101,11 @@ export function Navbar({ role = "visitor", userName = "" }) {
             </nav>
           </div>
 
-          <a className={styles.logo} href="/" aria-label="Nail Design - página inicial">
+          <a
+            className={styles.logo}
+            href={isAdmin ? "/admin" : "/"}
+            aria-label="Nail Design - página inicial"
+          >
             <img src={logo} alt="Nail Design" />
           </a>
 
@@ -120,6 +129,7 @@ export function Navbar({ role = "visitor", userName = "" }) {
 
       <MobileSidebar
         accountHref={accountHref}
+        accountLabel={mobileAccountLabel}
         isAdmin={isAdmin}
         isOpen={isMenuOpen}
         onClose={closeMenu}

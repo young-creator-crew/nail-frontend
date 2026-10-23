@@ -60,12 +60,12 @@ export function EditService() {
     if (updatedService.image) {
       await updateServiceImage(serviceId, updatedService.image)
     }
-    window.location.assign("/meus-servicos")
+    window.location.assign("/admin/meus-servicos")
   }
 
   const handleDelete = async () => {
     await deleteService(serviceId)
-    window.location.assign("/meus-servicos")
+    window.location.assign("/admin/meus-servicos")
   }
 
   return (

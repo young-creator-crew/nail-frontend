@@ -116,7 +116,7 @@ export function ServiceForm({
     return (
       <main className={styles.page}>
         <div className={styles.content}>
-          <ButtonBack href="/meus-servicos">Meus serviços</ButtonBack>
+          <ButtonBack href="/admin/meus-servicos">Meus serviços</ButtonBack>
           <p className={styles.error} role="alert">{loadError}</p>
         </div>
       </main>
@@ -126,7 +126,7 @@ export function ServiceForm({
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        <ButtonBack href="/meus-servicos">Meus serviços</ButtonBack>
+        <ButtonBack href="/admin/meus-servicos">Meus serviços</ButtonBack>
         <h1 className={styles.title}>
           {isEditing ? "Editar serviço" : "Novo serviço"}
         </h1>

@@ -22,8 +22,11 @@ function EmptyAppointments({ history = false }) {
   )
 }
 
-export function Perfil() {
-  const [profile, setProfile] = useState({ name: "[NOME DO CLIENTE]", password: "" })
+export function Perfil({ isAdmin = false }) {
+  const [profile, setProfile] = useState({
+    name: isAdmin ? "[NOME DA ADMINISTRADORA]" : "[NOME DO CLIENTE]",
+    password: "",
+  })
   const [draftName, setDraftName] = useState(profile.name)
   const [isEditing, setIsEditing] = useState(false)
   const [feedback, setFeedback] = useState("")
@@ -43,8 +46,12 @@ export function Perfil() {
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        <p className={styles.eyebrow}>SEU ESPAÇO DE CUIDADO</p>
-        <h1>Meu perfil e<br className={styles.mobileBreak} /> agendamentos</h1>
+        <p className={styles.eyebrow}>
+          {isAdmin ? "ESPAÇO DA PROFISSIONAL" : "SEU ESPAÇO DE CUIDADO"}
+        </p>
+        <h1>
+          {isAdmin ? "Meu perfil" : <>Meu perfil e<br className={styles.mobileBreak} /> agendamentos</>}
+        </h1>
 
         <section className={styles.profileCard} aria-label="Identificação do cliente">
           <div className={styles.profileInfo}>
@@ -67,15 +74,15 @@ export function Perfil() {
           </form>
         )}
 
-        <section className={styles.appointmentSection}>
+        {!isAdmin && <section className={styles.appointmentSection}>
           <div className={styles.sectionHeading}><h2>Próximos agendamentos</h2><span>0</span></div>
           <EmptyAppointments />
-        </section>
+        </section>}
 
-        <section className={styles.appointmentSection}>
+        {!isAdmin && <section className={styles.appointmentSection}>
           <div className={styles.sectionHeading}><h2>Histórico de agendamentos</h2><span>0</span></div>
           <EmptyAppointments history />
-        </section>
+        </section>}
       </div>
       {feedback && <div className={styles.toast} role="status"><span>✓</span>{feedback}<button type="button" aria-label="Fechar mensagem" onClick={() => setFeedback("")}>×</button></div>}
     </main>

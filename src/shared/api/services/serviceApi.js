@@ -1,69 +1,50 @@
-import { apiClient } from "../apiClient"
+import { api } from "../apiClient"
 import { API_ENDPOINTS } from "../endpoints"
 
-export async function getServices(config = {}) {
-  if (!API_ENDPOINTS.services) {
-    throw new Error("O endpoint de serviços ainda não foi configurado.")
-  }
-
-  const response = await apiClient.get(API_ENDPOINTS.services, config)
-  return response.data
+export function getServices(config = {}) {
+  return api.get(API_ENDPOINTS.services, config)
 }
 
-export async function getServiceById(serviceId, config = {}) {
-  const response = await apiClient.get(
-    API_ENDPOINTS.serviceById(serviceId),
-    config,
-  )
-  return response.data
-}
-
-export async function createService(formData, config = {}) {
-  const response = await apiClient.post(
-    API_ENDPOINTS.services,
-    formData,
-    {
-      ...config,
-      headers: { ...config.headers, "Content-Type": "multipart/form-data" },
-    },
-  )
-  return response.data
-}
-
-export async function updateService(serviceId, service, config = {}) {
-  const response = await apiClient.put(
-    API_ENDPOINTS.serviceById(serviceId),
-    service,
+export function getServiceById(serviceId, config = {}) {
   if (!serviceId) {
-    throw new Error("O identificador do serviço é obrigatório.")
+    return Promise.reject(new Error("O identificador do serviço é obrigatório."))
   }
 
-  if (!API_ENDPOINTS.services) {
-    throw new Error("O endpoint de serviços ainda não foi configurado.")
-  }
-
-  const response = await apiClient.get(
-    API_ENDPOINTS.serviceById(serviceId),
-    config,
-  )
-  return response.data
+  return api.get(API_ENDPOINTS.serviceById(serviceId), config)
 }
 
-export async function updateServiceImage(serviceId, image, config = {}) {
+export function createService(formData, config = {}) {
+  return api.post(API_ENDPOINTS.services, formData, {
+    ...config,
+    headers: { ...config.headers },
+  })
+}
+
+export function updateService(serviceId, service, config = {}) {
+  if (!serviceId) {
+    return Promise.reject(new Error("O identificador do serviço é obrigatório."))
+  }
+
+  return api.put(API_ENDPOINTS.serviceById(serviceId), service, config)
+}
+
+export function updateServiceImage(serviceId, image, config = {}) {
+  if (!serviceId || !image) {
+    return Promise.reject(new Error("O serviço e a imagem são obrigatórios."))
+  }
+
   const formData = new FormData()
   formData.append("image", image)
-
-  const response = await apiClient.put(
-    `${API_ENDPOINTS.serviceById(serviceId)}/image`,
-    formData,
-    {
-      ...config,
-      headers: { ...config.headers, "Content-Type": "multipart/form-data" },
-    },
-  )
-  return response.data
+  return api.put(API_ENDPOINTS.serviceImage(serviceId), formData, {
+    ...config,
+    headers: { ...config.headers },
+  })
 }
 
-export async function deleteService(serviceId, config = {}) {
-  await apiClient.delete(API_ENDPOINTS.serviceById(serviceId), config)
+export function deleteService(serviceId, config = {}) {
+  if (!serviceId) {
+    return Promise.reject(new Error("O identificador do serviço é obrigatório."))
+  }
+
+  return api.delete(API_ENDPOINTS.serviceById(serviceId), config)
 }

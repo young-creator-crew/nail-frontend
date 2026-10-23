@@ -24,14 +24,16 @@ function CalendarIcon() {
   )
 }
 
-export function ServiceDetailsPage({ service }) {
+export function ServiceDetailsPage({ service, isAdmin = false }) {
   if (!service) {
     return (
       <main className={styles.page}>
         <div className={styles.notFound}>
           <h1 className={styles.notFoundTitle}>Serviço não encontrado</h1>
           <p>Confira o endereço ou volte para a lista de serviços.</p>
-          <ButtonBack href="/servicos">Voltar aos serviços</ButtonBack>
+          <ButtonBack href={isAdmin ? "/admin/servicos" : "/servicos"}>
+            Voltar aos serviços
+          </ButtonBack>
         </div>
       </main>
     )
@@ -45,7 +47,10 @@ export function ServiceDetailsPage({ service }) {
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        <ButtonBack className={styles.backLink} href="/servicos">
+        <ButtonBack
+          className={styles.backLink}
+          href={isAdmin ? "/admin/servicos" : "/servicos"}
+        >
           Voltar aos serviços
         </ButtonBack>
 
@@ -64,14 +69,18 @@ export function ServiceDetailsPage({ service }) {
 
             <div className={styles.booking}>
               <p className={styles.bookingDescription}>
-                Escolha uma data e veja os horários disponíveis para o seu
-                atendimento.
+                {isAdmin
+                  ? "Atualize os dados deste serviço no painel administrativo."
+                  : "Escolha uma data e veja os horários disponíveis para o seu atendimento."}
               </p>
               <ButtonAction
                 className={styles.bookingButton}
-                icon={<CalendarIcon />}
+                href={isAdmin
+                  ? `/admin/meus-servicos/editar?id=${service.id}`
+                  : undefined}
+                icon={isAdmin ? "✎" : <CalendarIcon />}
               >
-                Agendar este serviço
+                {isAdmin ? "Editar serviço" : "Agendar este serviço"}
               </ButtonAction>
             </div>
           </div>

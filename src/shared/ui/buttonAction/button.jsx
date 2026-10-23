@@ -9,7 +9,11 @@ export function ButtonAction({
   type = "button",
   ...props
 }) {
-  const buttonClassName = [styles.button, className].filter(Boolean).join(" ")
+  const buttonClassName = [
+    styles.button,
+    iconPosition === "left" ? styles.iconLeft : "",
+    className,
+  ].filter(Boolean).join(" ")
   const Component = href ? "a" : "button"
   const componentProps = href ? { href, ...props } : { type, ...props }
 

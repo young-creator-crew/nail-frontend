@@ -4,7 +4,7 @@ import { ServiceCatalogFilter } from "../../../features/service-catalog-filter/u
 import { ProductModal } from "../../../shared/ui/productModal/ProductModal"
 import styles from "./ServicesPage.module.css"
 
-export function ServicesPage() {
+export function ServicesPage({ isAdmin = false }) {
   const [selectedCategory, setSelectedCategory] = useState("Todos")
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -49,7 +49,7 @@ export function ServicesPage() {
               <ProductModal
                 category={service.category}
                 description={service.description}
-                href="#"
+                href={`${isAdmin ? "/admin" : ""}/servicos/${service.id}`}
                 image={service.image}
                 imageAlt={service.imageAlt}
                 key={service.id}

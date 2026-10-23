@@ -15,7 +15,7 @@ export function AddService() {
     formData.append("image", service.image)
 
     await createService(formData)
-    window.location.assign("/meus-servicos")
+    window.location.assign("/admin/meus-servicos")
   }
 
   return <ServiceForm onSubmit={handleSubmit} />

@@ -32,7 +32,7 @@ export function AdminAgenda() {
         <p className={styles.eyebrow}>ESPAÇO DA PROFISSIONAL</p>
         <div className={styles.titleRow}>
           <h1>Minha agenda</h1>
-          <ButtonAction href="/admin/servicos">Gerenciar serviços</ButtonAction>
+          <ButtonAction href="/admin/meus-servicos">Gerenciar serviços</ButtonAction>
         </div>
         <div className={styles.dateField}>
           <Input label="Escolha uma data" type="date" value={date} onChange={handleDateChange} />

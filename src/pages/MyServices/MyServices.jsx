@@ -51,7 +51,7 @@ export function MyServices() {
           className={styles.createButton}
           icon="+"
           iconPosition="left"
-          onClick={() => window.location.assign("/meus-servicos/adicionar")}
+          onClick={() => window.location.assign("/admin/meus-servicos/adicionar")}
         >
           Novo serviço
         </ButtonAction>
@@ -74,7 +74,7 @@ export function MyServices() {
               <ProductModal
                 category={service.category}
                 description={service.description}
-                href={`/meus-servicos/editar?id=${service.id}`}
+                href={`/admin/meus-servicos/editar?id=${service.id}`}
                 image={service.imageUrl}
                 isAdmin
                 key={service.id}

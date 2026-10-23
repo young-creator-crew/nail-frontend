@@ -141,7 +141,9 @@
     flex-direction: row;
     justify-content: space-between;
     gap: 12px;
-    
+  }
+}
+
 @media (max-width: 380px) {
   .imageWrapper {
     aspect-ratio: 1.35;
