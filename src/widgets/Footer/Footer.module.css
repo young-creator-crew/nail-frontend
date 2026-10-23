@@ -2,6 +2,7 @@
   border-top: 1px solid var(--color-border);
   background: var(--color-background-primary);
   color: var(--color-text-primary);
+  font-family: "Roboto", sans-serif;
 }
 
 .content {
@@ -32,6 +33,7 @@
 .brandSubtitle {
   margin-top: 5px;
   color: var(--color-text-primary);
+  font-family: "Roboto", sans-serif;
   font-size: 9px;
   letter-spacing: 0.22em;
   line-height: 1;

@@ -4,21 +4,24 @@ export function ProductModal({
   category = "Nail art",
   description = "Cor, detalhes e personalidade em cada unha.",
   image,
+  imageAlt = "",
   isAdmin = false,
   name = "Nail Art",
   price = 80,
   href = "#",
 }) {
-  const formattedPrice = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(price)
+  const formattedPrice = typeof price === "number"
+    ? new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(price)
+    : price
 
   return (
     <a className={styles.card} href={href} aria-label={`${name}: ver detalhes`}>
       <div className={styles.imageWrapper}>
         {image ? (
-          <img className={styles.image} src={image} alt="" />
+          <img className={styles.image} src={image} alt={imageAlt} loading="lazy" />
         ) : (
           <div className={styles.imagePlaceholder} aria-hidden="true" />
         )}

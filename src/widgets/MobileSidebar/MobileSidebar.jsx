@@ -51,13 +51,16 @@ export function MobileSidebar({ accountHref, isAdmin, isOpen, onClose }) {
         <nav className={styles.navigation} aria-label="Navegação móvel">
           {isAdmin ? (
             <>
+              <a href="/" onClick={onClose}>Início</a>
+              <a href="/servicos" onClick={onClose}>Catálogo</a>
               <a href="/admin/agenda" onClick={onClose}>Minha agenda</a>
               <a href="/admin/servicos" onClick={onClose}>Meus serviços</a>
             </>
           ) : (
             <>
-              <a href="/servicos" onClick={onClose}>Serviços</a>
-              <a href={accountHref} onClick={onClose}>Meu perfil</a>
+              <a href="/" onClick={onClose}>Início</a>
+              <a href="/servicos" onClick={onClose}>Serviços e inspirações</a>
+              <a href={accountHref} onClick={onClose}>Meus agendamentos</a>
             </>
           )}
         </nav>
