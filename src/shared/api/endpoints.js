@@ -10,4 +10,6 @@ export const API_ENDPOINTS = {
   updateClientProfile: "",
   clientAppointments: "",
   adminAppointments: "",
+  register: "",
+  login: "",
 }

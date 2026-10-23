@@ -1,5 +1,7 @@
 import { Navbar } from "../widgets/Navbar/Navbar"
 import { Footer } from "../widgets/Footer/Footer"
+import { Cadastro } from "../pages/Cadastro/Cadastro"
+import { Login } from "../pages/Login/Login"
 import { Home } from "../pages/Home/Home"
 import { AdminAgenda } from "../pages/AdminAgenda/AdminAgenda"
 import { Perfil } from "../pages/Perfil/Perfil"
@@ -9,6 +11,7 @@ function App() {
   const currentPath = window.location.pathname
   const isAdmin = currentPath.startsWith("/admin")
   const Page = isAdmin ? AdminAgenda : currentPath === "/perfil" ? Perfil : null
+  const Page = currentPath === "/cadastro" ? Cadastro : Login
 
   return (
     <>
