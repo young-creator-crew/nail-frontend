@@ -38,6 +38,17 @@
   margin-top: 22px;
 }
 
+.message,
+.error {
+  margin-top: 28px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.error {
+  color: #b42318;
+}
+
 @media (min-width: 768px) {
   .page {
     padding: 48px 36px 72px;
@@ -49,8 +60,14 @@
   }
 
   .services {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
     margin-top: 28px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .services {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
