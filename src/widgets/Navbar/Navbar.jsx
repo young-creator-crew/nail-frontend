@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import logo from "../../shared/assets/Logo.svg"
 import menuIcon from "../../shared/assets/Menu.svg"
 import profileIcon from "../../shared/assets/Perfil.svg"
-import { MobileSidebar } from "../MobileSidebar/MobileSidebar"
+import { MobileSidebar } from "../mobile-sidebar/MobileSidebar"
 import styles from "./Navbar.module.css"
 
 const visitorLinks = [
@@ -12,6 +12,7 @@ const visitorLinks = [
 
 const adminLinks = [
   { label: "Início", href: "/admin" },
+  { label: "Dashboard", href: "/admin/dashboard" },
   { label: "Catálogo", href: "/admin/servicos" },
   { label: "Minha agenda", href: "/admin/agenda" },
   { label: "Meus serviços", href: "/admin/meus-servicos" },

@@ -1,6 +1,7 @@
 import { useState } from "react"
-import { ButtonAction } from "../../../shared/ui/buttonAction/button"
-import { demoAppointment, demoAvailableTimes } from "../model/demoAppointment"
+import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
+import { ClockIcon } from "../../../shared/ui/icons/Icons"
+import { demoAppointment, demoAvailableTimes } from "../model/demo-appointment"
 import styles from "./AppointmentBooking.module.css"
 
 const weekdayLabels = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
@@ -17,21 +18,6 @@ const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
 })
-
-function ClockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
-      <path
-        d="M12 7v5l3.2 2"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
 
 function getDateKey(date) {
   const year = date.getFullYear()

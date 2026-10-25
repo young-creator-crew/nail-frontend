@@ -1,16 +1,17 @@
 import React from "react"
 import { AppointmentPage } from "../pages/appointment/ui/AppointmentPage"
-import { AdminAgenda } from "../pages/AdminAgenda/AdminAgenda"
-import { Cadastro } from "../pages/Cadastro/Cadastro"
-import { AddService } from "../pages/MyServices/AddService"
-import { EditService } from "../pages/MyServices/EditService"
-import { MyServices } from "../pages/MyServices/MyServices"
-import { Perfil } from "../pages/Perfil/Perfil"
+import { AdminAgenda } from "../pages/admin-agenda/AdminAgenda"
+import { AdminDashboard } from "../pages/admin-dashboard/AdminDashboard"
+import { Cadastro } from "../pages/cadastro/Cadastro"
+import { AddService } from "../pages/my-services/AddService"
+import { EditService } from "../pages/my-services/EditService"
+import { MyServices } from "../pages/my-services/MyServices"
+import { Perfil } from "../pages/perfil/Perfil"
 import { Home } from "../pages/home/Home"
-import { Login } from "../pages/Login/Login"
+import { Login } from "../pages/login/Login"
 import { ServiceDetailsPage } from "../pages/service-details/ui/ServiceDetailsPage"
 import { ServicesPage } from "../pages/services/ui/ServicesPage"
-import { serviceDetails } from "../entities/service/model/serviceDetails"
+import { serviceDetails } from "../entities/service/model/service-details"
 
 export function getRoute(pathname) {
   const path = pathname.replace(/\/+$/, "") || "/"
@@ -22,6 +23,7 @@ export function getRoute(pathname) {
   if (path === "/entrar") return { Page: Login, role: "visitor" }
   if (path === "/perfil") return { Page: Perfil, role: "client" }
   if (path === "/admin") return { Page: AdminAgenda, role: "admin" }
+  if (path === "/admin/dashboard") return { Page: AdminDashboard, role: "admin" }
   if (path === "/admin/agenda") return { Page: AdminAgenda, role: "admin" }
   if (path === "/admin/servicos") {
     return { Page: () => <ServicesPage isAdmin />, role: "admin" }

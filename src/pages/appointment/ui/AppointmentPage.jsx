@@ -1,5 +1,5 @@
 import { AppointmentBooking } from "../../../features/appointment-booking/ui/AppointmentBooking"
-import { ButtonBack } from "../../../shared/ui/buttonBack/button"
+import { ButtonBack } from "../../../shared/ui/button-back/ButtonBack"
 import styles from "./AppointmentPage.module.css"
 
 export function AppointmentPage() {

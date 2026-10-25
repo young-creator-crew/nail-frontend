@@ -1,5 +1,5 @@
-import { Footer } from "../widgets/Footer/Footer"
-import { Navbar } from "../widgets/Navbar/Navbar"
+import { Footer } from "../widgets/footer/Footer"
+import { Navbar } from "../widgets/navbar/Navbar"
 import { getRoute } from "./routes"
 import "./styles/index.css"
 

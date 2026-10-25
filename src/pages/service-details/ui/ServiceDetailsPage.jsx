@@ -1,28 +1,7 @@
-import { ButtonAction } from "../../../shared/ui/buttonAction/button"
-import { ButtonBack } from "../../../shared/ui/buttonBack/button"
+import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
+import { ButtonBack } from "../../../shared/ui/button-back/ButtonBack"
+import { CalendarIcon } from "../../../shared/ui/icons/Icons"
 import styles from "./ServiceDetailsPage.module.css"
-
-function CalendarIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <rect
-        x="3"
-        y="4.5"
-        width="14"
-        height="13"
-        rx="1.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M6.5 3v3M13.5 3v3M3 8h14M6.5 11h.01M10 11h.01M13.5 11h.01M6.5 14h.01M10 14h.01"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
 
 export function ServiceDetailsPage({ service, isAdmin = false }) {
   if (!service) {

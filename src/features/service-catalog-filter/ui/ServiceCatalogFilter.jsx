@@ -1,5 +1,5 @@
 import styles from "./ServiceCatalogFilter.module.css"
-import { Input } from "../../../shared/ui/input/input"
+import { Input } from "../../../shared/ui/text-input/Input"
 
 export function ServiceCatalogFilter({
   categories,

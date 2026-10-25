@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { services, serviceCategories } from "../../../entities/service/model/services"
 import { ServiceCatalogFilter } from "../../../features/service-catalog-filter/ui/ServiceCatalogFilter"
-import { ProductModal } from "../../../shared/ui/productModal/ProductModal"
+import { ServiceCard } from "../../../entities/service/ui/ServiceCard"
 import styles from "./ServicesPage.module.css"
 
 export function ServicesPage({ isAdmin = false }) {
@@ -46,7 +46,7 @@ export function ServicesPage({ isAdmin = false }) {
         {filteredServices.length > 0 ? (
           <section className={styles.grid} aria-label="Catálogo de serviços">
             {filteredServices.map((service) => (
-              <ProductModal
+              <ServiceCard
                 category={service.category}
                 description={service.description}
                 href={`${isAdmin ? "/admin" : ""}/servicos/${service.id}`}

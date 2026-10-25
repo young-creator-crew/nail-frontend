@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 import { api } from "../apiClient"
-import { getAdminAppointments, updateClientProfile } from "./profileApi"
+import { getAdminAppointments, getAdminDashboard, updateClientProfile } from "./profileApi"
 
 describe("profile API", () => {
   it("updates the current profile through the generic client", async () => {
@@ -18,6 +18,16 @@ describe("profile API", () => {
 
     expect(getSpy).toHaveBeenCalledWith("/appointments/admin", {
       params: { status: "open", date: "2026-10-23" },
+    })
+  })
+
+  it("loads the administrative dashboard with the selected period", async () => {
+    const getSpy = vi.spyOn(api, "get").mockResolvedValue({})
+
+    await getAdminDashboard({ params: { startDate: "2026-10-10", endDate: "2026-10-24" } })
+
+    expect(getSpy).toHaveBeenCalledWith("/dashboard", {
+      params: { startDate: "2026-10-10", endDate: "2026-10-24" },
     })
   })
 })

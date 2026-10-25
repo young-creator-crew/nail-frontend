@@ -1,5 +1,6 @@
-import { ButtonAction } from "../../shared/ui/buttonAction/button"
-import { ProductModal } from "../../shared/ui/productModal/ProductModal"
+import { ButtonAction } from "../../shared/ui/button-action/ButtonAction"
+import { ArrowUpRightIcon, CalendarIcon } from "../../shared/ui/icons/Icons"
+import { ServiceCard } from "../../entities/service/ui/ServiceCard"
 import styles from "./Home.module.css"
 
 const benefits = [
@@ -38,30 +39,6 @@ const services = [
     href: "[LINK_OFICIAL_04]",
   },
 ]
-
-function ArrowIcon() {
-  return (
-    <svg viewBox="0 0 18 18" aria-hidden="true">
-      <path
-        d="M4 14 14 4M6 4h8v8"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  )
-}
-
-function CalendarIcon() {
-  return (
-    <svg viewBox="0 0 18 18" aria-hidden="true">
-      <rect x="3" y="4.5" width="12" height="10.5" rx="1" fill="none" stroke="currentColor" />
-      <path d="M5.5 3v3M12.5 3v3M3 7.5h12" fill="none" stroke="currentColor" />
-    </svg>
-  )
-}
 
 export function Home() {
   return (
@@ -132,12 +109,12 @@ export function Home() {
             <h2 id="services-title">Serviços e inspirações</h2>
           </div>
           <a className={styles.sectionLink} href="[LINK_OFICIAL_DA_SECAO]">
-            Ver todos os serviços <ArrowIcon />
+            Ver todos os serviços <ArrowUpRightIcon />
           </a>
         </div>
         <div className={styles.cardGrid}>
           {services.map((service) => (
-            <ProductModal
+            <ServiceCard
               key={service.title}
               category={service.category}
               description={service.description}
@@ -164,7 +141,7 @@ export function Home() {
             agendar com mais praticidade.
           </p>
           <a className={styles.sectionLink} href="[LINK_OFICIAL_DA_SECAO]">
-            Encontre seu próximo horário <ArrowIcon />
+            Encontre seu próximo horário <ArrowUpRightIcon />
           </a>
         </div>
       </section>

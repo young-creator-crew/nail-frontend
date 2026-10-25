@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest"
-import { AdminAgenda } from "../pages/AdminAgenda/AdminAgenda"
-import { AddService } from "../pages/MyServices/AddService"
-import { EditService } from "../pages/MyServices/EditService"
-import { MyServices } from "../pages/MyServices/MyServices"
-import { Perfil } from "../pages/Perfil/Perfil"
+import { AdminAgenda } from "../pages/admin-agenda/AdminAgenda"
+import { AdminDashboard } from "../pages/admin-dashboard/AdminDashboard"
+import { AddService } from "../pages/my-services/AddService"
+import { EditService } from "../pages/my-services/EditService"
+import { MyServices } from "../pages/my-services/MyServices"
+import { Perfil } from "../pages/perfil/Perfil"
 import { Home } from "../pages/home/Home"
-import { Login } from "../pages/Login/Login"
+import { Login } from "../pages/login/Login"
 import { ServicesPage } from "../pages/services/ui/ServicesPage"
 import { getRoute } from "./routes"
 
@@ -17,6 +18,7 @@ describe("application routes and personas", () => {
     ["/perfil", Perfil, "client"],
     ["/admin", AdminAgenda, "admin"],
     ["/admin/agenda", AdminAgenda, "admin"],
+    ["/admin/dashboard", AdminDashboard, "admin"],
     ["/admin/meus-servicos", MyServices, "admin"],
     ["/admin/meus-servicos/adicionar", AddService, "admin"],
     ["/admin/meus-servicos/editar", EditService, "admin"],
