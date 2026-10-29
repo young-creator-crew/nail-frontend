@@ -88,7 +88,23 @@ h1 {
     background: var(--color-background-primary);
 }
 
+.logoutButton {
+    min-height: 46px;
+    padding: 13px 22px;
+    border: 1px solid var(--color-action-primary);
+    border-radius: 7px;
+    color: var(--color-action-primary);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.logoutButton:hover {
+    background: var(--color-action-primary);
+    color: var(--color-background-primary);
+}
+
 .outlineButton:focus-visible,
+.logoutButton:focus-visible,
 .empty a:focus-visible,
 .toast button:focus-visible {
     outline: 2px solid var(--color-action-primary);
@@ -230,6 +246,10 @@ h1 {
     }
 
     .outlineButton {
+        width: 100%;
+    }
+
+    .logoutButton {
         width: 100%;
     }
 

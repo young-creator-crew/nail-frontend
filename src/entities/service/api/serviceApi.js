@@ -1,8 +1,23 @@
 import { api } from "../../../shared/api/apiClient"
 import { API_ENDPOINTS } from "../../../shared/api/endpoints"
 
+function buildMultipartConfig(config = {}) {
+  const headers = { ...config.headers }
+  delete headers["Content-Type"]
+  delete headers["content-type"]
+
+  return {
+    ...config,
+    headers,
+  }
+}
+
 export function getServices(config = {}) {
   return api.get(API_ENDPOINTS.services, config)
+}
+
+export function getAdminServices(config = {}) {
+  return api.get(API_ENDPOINTS.adminServices, config)
 }
 
 export function getServiceById(serviceId, config = {}) {
@@ -13,38 +28,35 @@ export function getServiceById(serviceId, config = {}) {
   return api.get(API_ENDPOINTS.serviceById(serviceId), config)
 }
 
-export function createService(formData, config = {}) {
-  return api.post(API_ENDPOINTS.services, formData, {
-    ...config,
-    headers: { ...config.headers },
-  })
+export function createService(service, photo, config = {}) {
+  const formData = new FormData()
+  formData.append("service", new Blob([JSON.stringify(service)], { type: "application/json" }))
+  if (photo) formData.append("foto", photo)
+  return api.post(API_ENDPOINTS.services, formData, buildMultipartConfig(config))
 }
 
-export function updateService(serviceId, service, config = {}) {
+export function updateService(serviceId, service, photo, config = {}) {
   if (!serviceId) {
     return Promise.reject(new Error("O identificador do serviço é obrigatório."))
-  }
-
-  return api.put(API_ENDPOINTS.serviceById(serviceId), service, config)
-}
-
-export function updateServiceImage(serviceId, image, config = {}) {
-  if (!serviceId || !image) {
-    return Promise.reject(new Error("O serviço e a imagem são obrigatórios."))
   }
 
   const formData = new FormData()
-  formData.append("image", image)
-  return api.put(API_ENDPOINTS.serviceImage(serviceId), formData, {
-    ...config,
-    headers: { ...config.headers },
-  })
+  formData.append("service", new Blob([JSON.stringify(service)], { type: "application/json" }))
+  if (photo) formData.append("foto", photo)
+  return api.put(API_ENDPOINTS.serviceById(serviceId), formData, buildMultipartConfig(config))
 }
 
-export function deleteService(serviceId, config = {}) {
+export function deactivateService(serviceId, config = {}) {
   if (!serviceId) {
     return Promise.reject(new Error("O identificador do serviço é obrigatório."))
   }
 
-  return api.delete(API_ENDPOINTS.serviceById(serviceId), config)
+  const headers = { ...config.headers }
+  delete headers["Content-Type"]
+  delete headers["content-type"]
+
+  return api.request("PATCH", API_ENDPOINTS.deactivateService(serviceId), {
+    ...config,
+    headers,
+  })
 }

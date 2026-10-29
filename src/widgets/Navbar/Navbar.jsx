@@ -11,7 +11,6 @@ const visitorLinks = [
 ]
 
 const adminLinks = [
-  { label: "Início", href: "/admin" },
   { label: "Dashboard", href: "/admin/dashboard" },
   { label: "Catálogo", href: "/admin/servicos" },
   { label: "Minha agenda", href: "/admin/agenda" },

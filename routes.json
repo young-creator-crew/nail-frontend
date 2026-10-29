@@ -1,0 +1,1137 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Nail API",
+    "description": "API para gerenciamento de usuários, serviços e agendamentos de manicure.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Autenticação",
+      "description": "Operações de login e cadastro de usuários."
+    },
+    {
+      "name": "Dashboard",
+      "description": "Operações para recuperar indicadores de painel e estatísticas de agendamentos."
+    },
+    {
+      "name": "Serviços",
+      "description": "Operações de consulta, cadastro, atualização e desativação de serviços."
+    },
+    {
+      "name": "Usuários",
+      "description": "Consulta, atualização e desativação de usuários"
+    }
+  ],
+  "paths": {
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Consultar usuário por ID",
+        "description": "Retorna o perfil de um usuário ativo pelo seu identificador.",
+        "operationId": "getProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identificador do usuário.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Identificador inválido."
+          },
+          "404": {
+            "description": "Usuário não encontrado ou inativo."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Atualizar usuário",
+        "description": "Atualiza o nome, o e-mail e o telefone de um usuário ativo.",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identificador do usuário.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos ou falha na validação."
+          },
+          "404": {
+            "description": "Usuário não encontrado ou inativo."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Desativar usuário",
+        "description": "Desativa logicamente o cadastro, preservando os registros relacionados.",
+        "operationId": "removeUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identificador do usuário.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Usuário desativado."
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          }
+        }
+      }
+    },
+    "/services/{id}": {
+      "get": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Consultar serviço por ID",
+        "description": "Retorna os dados completos de um serviço, incluindo modalidades, preços, durações estimadas e adicionais ativos.",
+        "operationId": "getService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Serviço encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponseDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Serviço não encontrado."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Atualizar serviço",
+        "description": "Atualiza o nome, a descrição, a foto opcional, as modalidades e os adicionais de um serviço existente. As listas devem ser completas; IDs identificam modalidades e adicionais já existentes.",
+        "operationId": "updateService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Dados atualizados do serviço em JSON e, opcionalmente, arquivo de imagem.",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "$ref": "#/components/schemas/ServiceUpdateRequestDTO"
+                  },
+                  "foto": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "service"
+                ]
+              },
+              "encoding": {
+                "service": {
+                  "contentType": "application/json"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Serviço atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos ou modalidade ou adicional não pertencente ao serviço."
+          },
+          "404": {
+            "description": "Serviço não encontrado."
+          },
+          "409": {
+            "description": "Já existe outro serviço cadastrado com esse nome."
+          },
+          "415": {
+            "description": "Tipo de conteúdo da requisição ou de uma de suas partes não suportado."
+          }
+        }
+      }
+    },
+    "/services": {
+      "get": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Listar serviços ativos",
+        "description": "Retorna informações resumidas dos serviços ativos, incluindo nome, descrição e foto.",
+        "operationId": "getServices",
+        "responses": {
+          "200": {
+            "description": "Lista de serviços recuperada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceSummaryResponseDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Cadastrar serviço",
+        "description": "Cria um serviço ativo com nome, descrição, foto opcional, modalidades e adicionais. A parte 'service' deve conter JSON e a parte 'foto' pode conter uma imagem.",
+        "operationId": "createService",
+        "requestBody": {
+          "description": "Dados do serviço em JSON e, opcionalmente, arquivo de imagem.",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "$ref": "#/components/schemas/ServiceCreateRequestDTO"
+                  },
+                  "foto": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "service"
+                ]
+              },
+              "encoding": {
+                "service": {
+                  "contentType": "application/json"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Serviço cadastrado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados enviados inválidos."
+          },
+          "409": {
+            "description": "Já existe um serviço cadastrado com esse nome."
+          },
+          "415": {
+            "description": "Tipo de conteúdo da requisição ou de uma de suas partes não suportado."
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Cadastrar usuário",
+        "description": "Cria uma conta de usuário após validar os dados enviados.",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados enviados inválidos."
+          },
+          "409": {
+            "description": "E-mail já cadastrado."
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Realizar login",
+        "description": "Valida o e-mail e a senha de um usuário ativo.",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados enviados inválidos."
+          },
+          "401": {
+            "description": "Credenciais inválidas ou usuário inativo."
+          }
+        }
+      }
+    },
+    "/services/admin": {
+      "get": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Listar todos os serviços",
+        "description": "Retorna informações resumidas de todos os serviços, incluindo os desativados. Destinada ao gerenciamento administrativo.",
+        "operationId": "getAllServices",
+        "responses": {
+          "200": {
+            "description": "Lista de serviços recuperada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceSummaryResponseDTO"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Usuário sem permissão para acessar o gerenciamento de serviços."
+          }
+        }
+      }
+    },
+    "/dashboard/summary": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Obter resumo do painel",
+        "description": "Retorna KPIs de agendamentos e a contagem diária de agendamentos por status para o período selecionado.",
+        "operationId": "getSummary",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Data de início do período de referência.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-10-01"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Data de término do período de referência.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-10-31"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resumo do painel recuperado com sucesso.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Intervalo de datas inválido. A data de início não deve ser posterior à data de término.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/{id}/deactivate": {
+      "delete": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Desativar serviço",
+        "description": "Desativa um serviço sem excluí-lo fisicamente, preservando os registros relacionados.",
+        "operationId": "deactivateService",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Serviço desativado com sucesso."
+          },
+          "404": {
+            "description": "Serviço não encontrado."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserUpdateRequestDTO": {
+        "type": "object",
+        "description": "Dados necessários para atualizar o perfil de um usuário.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do usuário.",
+            "example": "Maria Silva",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mail do usuário. Deve possuir um formato válido e não estar cadastrado para outro usuário.",
+            "example": "maria@email.com",
+            "maxLength": 255,
+            "minLength": 0
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Telefone de contato. Campo opcional.",
+            "example": "+5511999999999",
+            "maxLength": 20,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "email",
+          "name"
+        ]
+      },
+      "UserResponseDTO": {
+        "type": "object",
+        "description": "Dados públicos retornados nas operações de usuário.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identificador do usuário.",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mail cadastrado.",
+            "example": "maria@email.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "Identificador do usuário.",
+            "example": "1"
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Telefone de contato; pode ser nulo.",
+            "example": "+5511999999999"
+          },
+          "userType": {
+            "type": "string",
+            "description": "Tipo do usuário.",
+            "enum": [
+              "ADMIN",
+              "CLIENTE"
+            ],
+            "example": "CLIENTE"
+          }
+        }
+      },
+      "ServiceAddonUpdateRequestDTO": {
+        "type": "object",
+        "description": "Solicitar dados para atualizar ou criar um complemento de serviço.",
+        "properties": {
+          "idNailServiceAddon": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identificador de um complemento existente. Se omitido, um novo complemento será criado.",
+            "example": 20,
+            "minimum": 0
+          },
+          "addonName": {
+            "type": "string",
+            "description": "Nome do complemento.",
+            "example": "Nail art",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "additionalPrice": {
+            "type": "number",
+            "description": "Preço adicional cobrado pelo complemento.",
+            "example": 15,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "additionalPrice",
+          "addonName"
+        ]
+      },
+      "ServiceOptionUpdateRequestDTO": {
+        "type": "object",
+        "description": "Solicitar dados para atualização ou criação de uma modalidade de serviço.",
+        "properties": {
+          "idNailServiceOption": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identificador de uma modalidade de serviço existente. Se omitido, uma nova modalidade será criada.",
+            "example": 10,
+            "minimum": 0
+          },
+          "optionType": {
+            "type": "string",
+            "description": "Tipo de modalidade de serviço.",
+            "enum": [
+              "APLICACAO",
+              "MANUTENCAO"
+            ],
+            "example": "APLICACAO"
+          },
+          "price": {
+            "type": "number",
+            "description": "Preço cobrado por esta modalidade de serviço.",
+            "example": 120,
+            "minimum": 0
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Duração estimada da modalidade, em minutos.",
+            "example": 90,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "durationMinutes",
+          "optionType",
+          "price"
+        ]
+      },
+      "ServiceUpdateRequestDTO": {
+        "type": "object",
+        "description": "Solicitar dados para a atualização de um serviço, incluindo sua lista completa de modalidades e complementos.",
+        "properties": {
+          "serviceName": {
+            "type": "string",
+            "description": "Nome do serviço.",
+            "example": "Alongamento de unhas em gel",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "serviceDescription": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Descrição do serviço.",
+            "example": "Alongamento de unhas com gel.",
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "options": {
+            "type": "array",
+            "description": "Lista completa das modalidades de serviço a serem mantidas ou criadas. As modalidades existentes que não constarem desta lista serão desativadas.",
+            "items": {
+              "$ref": "#/components/schemas/ServiceOptionUpdateRequestDTO"
+            },
+            "minItems": 1
+          },
+          "addons": {
+            "type": "array",
+            "description": "Lista completa de complementos a manter ou criar. Use um array vazio caso não haja complementos. Complementos existentes que não constarem nesta lista serão desativados.",
+            "items": {
+              "$ref": "#/components/schemas/ServiceAddonUpdateRequestDTO"
+            }
+          }
+        },
+        "required": [
+          "addons",
+          "options",
+          "serviceName"
+        ]
+      },
+      "ServiceOptionResponseDTO": {
+        "type": "object",
+        "description": "Dados de resposta para uma modalidade de serviço.",
+        "properties": {
+          "idNailServiceOption": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identificador exclusivo da modalidade de serviço.",
+            "example": 10,
+            "readOnly": true
+          },
+          "optionType": {
+            "type": "string",
+            "description": "Tipo de modalidade de serviço.",
+            "enum": [
+              "APLICACAO",
+              "MANUTENCAO"
+            ],
+            "example": "APLICACAO"
+          },
+          "price": {
+            "type": "number",
+            "description": "Preço cobrado por esta modalidade de serviço.",
+            "example": 120,
+            "minimum": 0
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Duração estimada da modalidade, em minutos.",
+            "example": 90,
+            "minimum": 1
+          }
+        }
+      },
+      "ServiceResponseDTO": {
+        "type": "object",
+        "description": "Dados completos da resposta de um serviço, incluindo suas modalidades e complementos.",
+        "properties": {
+          "idNailService": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identificador exclusivo do serviço.",
+            "example": 1,
+            "readOnly": true
+          },
+          "serviceName": {
+            "type": "string",
+            "description": "Nome do serviço.",
+            "example": "Alongamento de unhas em gel"
+          },
+          "serviceDescription": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Descrição do serviço.",
+            "example": "Alongamento de unhas com gel."
+          },
+          "photoUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "URL da foto do serviço.",
+            "example": "/fotos/2f59a2d0.jpg"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Indica se o serviço está ativo.",
+            "example": true
+          },
+          "options": {
+            "type": "array",
+            "description": "Modalidades ativas disponíveis para este serviço.",
+            "items": {
+              "$ref": "#/components/schemas/ServiceOptionResponseDTO"
+            }
+          },
+          "addons": {
+            "type": "array",
+            "description": "Complementos ativos disponíveis para este serviço.",
+            "items": {
+              "$ref": "#/components/schemas/ServiceAddonResponseDTO"
+            }
+          }
+        }
+      },
+      "ServiceAddonResponseDTO": {
+        "type": "object",
+        "description": "Dados de resposta para um complemento de serviço.",
+        "properties": {
+          "idNailServiceAddon": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identificador exclusivo do complemento de serviço.",
+            "example": 20,
+            "readOnly": true
+          },
+          "addonName": {
+            "type": "string",
+            "description": "Nome do complemento.",
+            "example": "Nail art"
+          },
+          "additionalPrice": {
+            "type": "number",
+            "description": "Preço adicional cobrado pelo complemento.",
+            "example": 15,
+            "minimum": 0
+          }
+        }
+      },
+      "ServiceAddonCreateRequestDTO": {
+        "type": "object",
+        "description": "Solicitar dados para a criação de um complemento de serviço.",
+        "properties": {
+          "addonName": {
+            "type": "string",
+            "description": "Nome do complemento.",
+            "example": "Nail art",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "additionalPrice": {
+            "type": "number",
+            "description": "Preço adicional cobrado pelo complemento.",
+            "example": 15,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "additionalPrice",
+          "addonName"
+        ]
+      },
+      "ServiceCreateRequestDTO": {
+        "type": "object",
+        "description": "Solicitar dados para a criação de um serviço completo, incluindo suas modalidades e complementos.",
+        "properties": {
+          "serviceName": {
+            "type": "string",
+            "description": "Nome do serviço.",
+            "example": "Alongamento de unhas em gel",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "serviceDescription": {
+            "type": "string",
+            "description": "Descrição do serviço.",
+            "example": "Alongamento de unhas com gel.",
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "options": {
+            "type": "array",
+            "description": "Modalidades de atendimento disponíveis para este serviço.",
+            "items": {
+              "$ref": "#/components/schemas/ServiceOptionCreateRequestDTO"
+            },
+            "minItems": 1
+          },
+          "addons": {
+            "type": "array",
+            "description": "Complementos disponíveis para este serviço. Envie um array vazio caso o serviço não possua complementos.",
+            "items": {
+              "$ref": "#/components/schemas/ServiceAddonCreateRequestDTO"
+            }
+          }
+        },
+        "required": [
+          "addons",
+          "options",
+          "serviceName"
+        ]
+      },
+      "ServiceOptionCreateRequestDTO": {
+        "type": "object",
+        "description": "Solicitar dados para a criação de uma modalidade de serviço.",
+        "properties": {
+          "optionType": {
+            "type": "string",
+            "description": "Tipo de modalidade de serviço.",
+            "enum": [
+              "APLICACAO",
+              "MANUTENCAO"
+            ],
+            "example": "APLICACAO"
+          },
+          "price": {
+            "type": "number",
+            "description": "Preço cobrado por esta modalidade de serviço.",
+            "example": 120,
+            "minimum": 0
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Duração estimada da modalidade, em minutos.",
+            "example": 90,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "durationMinutes",
+          "optionType",
+          "price"
+        ]
+      },
+      "RegisterRequestDTO": {
+        "type": "object",
+        "description": "Dados necessários para cadastrar um novo usuário.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do usuário.",
+            "example": "Maria Silva",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mail que será utilizado para acessar a aplicação.",
+            "example": "maria@email.com",
+            "maxLength": 255,
+            "minLength": 0
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "Senha original, com no mínimo 8 e no máximo 128 caracteres.",
+            "example": "Senha123!",
+            "maxLength": 128,
+            "minLength": 8,
+            "writeOnly": true
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Telefone de contato. Campo opcional.",
+            "example": "+5511999999999",
+            "maxLength": 20,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "email",
+          "name",
+          "password"
+        ]
+      },
+      "LoginRequestDTO": {
+        "type": "object",
+        "description": "Credenciais utilizadas para autenticar um usuário.",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mail cadastrado na aplicação.",
+            "example": "maria@email.com",
+            "maxLength": 255,
+            "minLength": 0
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "Senha original do usuário. Será validada com o hash armazenado.",
+            "example": "Senha123!",
+            "maxLength": 128,
+            "minLength": 0,
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "ServiceSummaryResponseDTO": {
+        "type": "object",
+        "description": "Dados de resposta resumidos para um serviço.",
+        "properties": {
+          "idNailService": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identificador exclusivo do serviço.",
+            "example": 1,
+            "readOnly": true
+          },
+          "serviceName": {
+            "type": "string",
+            "description": "Nome do serviço.",
+            "example": "Alongamento de unhas em gel"
+          },
+          "serviceDescription": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Descrição do serviço.",
+            "example": "Alongamento de unhas com gel."
+          },
+          "photoUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "URL da foto do serviço.",
+            "example": "/fotos/2f59a2d0.jpg"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Indica se o serviço está ativo.",
+            "example": true
+          }
+        }
+      },
+      "AppointmentDailySummaryResponseDTO": {
+        "type": "object",
+        "description": "Contagem diária de agendamentos, agrupados por status atual.",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Data representada por este ponto de dados.",
+            "example": "2026-10-01"
+          },
+          "scheduled": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Agendamentos atualmente com status AGENDADO.",
+            "example": 5,
+            "minimum": 0
+          },
+          "confirmed": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Agendamentos atualmente com status CONFIRMADO.",
+            "example": 3,
+            "minimum": 0
+          },
+          "completed": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Agendamentos atualmente com status CONCLUIDO.",
+            "example": 2,
+            "minimum": 0
+          },
+          "cancelled": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Agendamentos atualmente com status CANCELADO.",
+            "example": 1,
+            "minimum": 0
+          }
+        }
+      },
+      "DashboardKpiResponseDTO": {
+        "type": "object",
+        "description": "Indicadores-chave de desempenho para o período selecionado.",
+        "properties": {
+          "totalAppointments": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Número total de agendamentos com início previsto dentro do período selecionado, independentemente do status.",
+            "example": 128,
+            "minimum": 0
+          },
+          "completedRevenue": {
+            "type": "number",
+            "description": "Soma dos valores dos agendamentos marcados atualmente como concluídos dentro do período selecionado.",
+            "example": 8450,
+            "minimum": 0
+          },
+          "cancellationRate": {
+            "type": "number",
+            "description": "Percentual de agendamentos no período selecionado que estão marcados como cancelados. Varia de 0 a 100 e é arredondado para duas casas decimais.",
+            "example": 8.59,
+            "maximum": 100,
+            "minimum": 0
+          }
+        }
+      },
+      "DashboardResponseDTO": {
+        "type": "object",
+        "description": "Resumo do painel para um intervalo de datas selecionado.",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Data de início do período de referência.",
+            "example": "2026-10-01"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Data de término do período de referência.",
+            "example": "2026-10-31"
+          },
+          "kpis": {
+            "$ref": "#/components/schemas/DashboardKpiResponseDTO",
+            "description": "Indicadores-chave de desempenho para o período selecionado."
+          },
+          "appointmentsByDay": {
+            "type": "array",
+            "description": "Contagem diária de agendamentos, incluindo datas sem agendamentos.",
+            "items": {
+              "$ref": "#/components/schemas/AppointmentDailySummaryResponseDTO"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -11,7 +11,14 @@ import { Home } from "../pages/home/Home"
 import { Login } from "../pages/login/Login"
 import { ServiceDetailsPage } from "../pages/service-details/ui/ServiceDetailsPage"
 import { ServicesPage } from "../pages/services/ui/ServicesPage"
-import { serviceDetails } from "../entities/service/model/service-details"
+
+function AdminServicesPage() {
+  return <ServicesPage isAdmin />
+}
+
+function AdminPerfilPage() {
+  return <Perfil isAdmin />
+}
 
 export function getRoute(pathname) {
   const path = pathname.replace(/\/+$/, "") || "/"
@@ -26,10 +33,10 @@ export function getRoute(pathname) {
   if (path === "/admin/dashboard") return { Page: AdminDashboard, role: "admin" }
   if (path === "/admin/agenda") return { Page: AdminAgenda, role: "admin" }
   if (path === "/admin/servicos") {
-    return { Page: () => <ServicesPage isAdmin />, role: "admin" }
+    return { Page: AdminServicesPage, role: "admin" }
   }
   if (path === "/admin/perfil") {
-    return { Page: () => <Perfil isAdmin />, role: "admin" }
+    return { Page: AdminPerfilPage, role: "admin" }
   }
   if (path === "/admin/meus-servicos") return { Page: MyServices, role: "admin" }
   if (path === "/admin/meus-servicos/adicionar") {
@@ -44,7 +51,7 @@ export function getRoute(pathname) {
     return {
       Page: () => (
         <ServiceDetailsPage
-          service={serviceId === serviceDetails.id ? serviceDetails : undefined}
+          serviceId={serviceId}
         />
       ),
       role: "visitor",
@@ -57,7 +64,7 @@ export function getRoute(pathname) {
       Page: () => (
         <ServiceDetailsPage
           isAdmin
-          service={serviceId === serviceDetails.id ? serviceDetails : undefined}
+          serviceId={serviceId}
         />
       ),
       role: "admin",

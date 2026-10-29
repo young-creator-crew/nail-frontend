@@ -1,488 +1,416 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Chart } from "chart.js/auto";
-import { getDemoDashboard } from "../../../entities/dashboard/model/demo-dashboard";
+import { useEffect, useMemo, useRef, useState } from "react"
+import Chart from "chart.js/auto"
+import { getAdminDashboard } from "../../../entities/dashboard/api/dashboardApi"
+import { getDemoDashboard } from "../../../entities/dashboard/model/demo-dashboard"
 import {
-  dateOnly,
-  getDashboardMetrics,
-  normalizeDashboardData,
-  periodFor,
-  shiftPeriod,
-} from "../../../entities/dashboard/model/dashboard";
-import { getAdminDashboard } from "../../../entities/dashboard/api/dashboardApi";
-import {
+  ArrowUpRightIcon,
   CalendarIcon,
   DashboardIcon,
   UserIcon,
   WalletIcon,
-} from "../../../shared/ui/icons/Icons";
-import styles from "./AdminDashboard.module.css";
+} from "../../../shared/ui/icons/Icons"
+import styles from "./AdminDashboard.module.css"
 
-const TODAY = dateOnly(new Date());
-
-function formatDate(date) {
-  return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+function formatDateToApi(date) {
+  return date.toISOString().slice(0, 10)
 }
 
-function isoDate(date) {
-  return date.toISOString().slice(0, 10);
+function parseApiDate(value) {
+  return new Date(`${value}T00:00:00`)
 }
 
-function Icon({ children }) {
-  return (
-    <span className={styles.icon} aria-hidden="true">
-      {children}
-    </span>
-  );
+function formatShortDate(value) {
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit" }).format(parseApiDate(value))
 }
 
-function IndicatorIcon({ type }) {
-  if (type === "wallet") {
-    return <WalletIcon />
+function formatWeekDay(value) {
+  const formatted = new Intl.DateTimeFormat("pt-BR", { weekday: "long" }).format(parseApiDate(value))
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1)
+}
+
+function formatMoney(value) {
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)
+}
+
+function getInitialPeriod() {
+  const endDate = new Date()
+  const startDate = new Date(endDate)
+  startDate.setDate(endDate.getDate() - 14)
+
+  return {
+    startDate: formatDateToApi(startDate),
+    endDate: formatDateToApi(endDate),
   }
-  return <CalendarIcon />;
 }
 
-function DashboardChart({ daily, isMobile, visibleSeries }) {
-  const canvasRef = useRef(null);
-  const chartRef = useRef(null);
+function normalizeDashboardResponse(response, period) {
+  const fallback = getDemoDashboard({ endDate: period.endDate })
+  const rawDaily = Array.isArray(response?.appointmentsByDay)
+    ? response.appointmentsByDay
+    : Array.isArray(response?.daily)
+      ? response.daily
+      : fallback.daily
+
+  const daily = rawDaily
+    .map((entry) => {
+      const created = Number(
+        entry?.created
+        ?? Number(entry?.scheduled || 0)
+        + Number(entry?.confirmed || 0)
+        + Number(entry?.completed || 0)
+        + Number(entry?.cancelled || 0),
+      )
+
+      return {
+        date: entry?.date,
+        created,
+        completed: Number(entry?.completed || 0),
+        cancelled: Number(entry?.cancelled || 0),
+      }
+    })
+    .filter((entry) => entry.date)
+
+  const sortedDaily = [...daily].sort((a, b) => parseApiDate(a.date) - parseApiDate(b.date))
+  const cancelledTotal = sortedDaily.reduce((total, item) => total + item.cancelled, 0)
+  const totalAppointments = Number(response?.kpis?.totalAppointments)
+  const completedRevenue = Number(response?.kpis?.completedRevenue)
+  const cancellationRate = Number(response?.kpis?.cancellationRate)
+
+  const busiestDay = sortedDaily.reduce((current, day) => (
+    !current || day.created > current.created ? day : current
+  ), null)
+
+  return {
+    adminName: response?.adminName || "Juliana",
+    startDate: response?.startDate || period.startDate,
+    endDate: response?.endDate || period.endDate,
+    periodDays: sortedDaily.length || 15,
+    daily: sortedDaily,
+    totalAppointments: Number.isFinite(totalAppointments)
+      ? totalAppointments
+      : sortedDaily.reduce((total, item) => total + item.created, 0),
+    completedRevenue: Number.isFinite(completedRevenue) ? completedRevenue : 0,
+    cancellationRate: Number.isFinite(cancellationRate) ? cancellationRate : 0,
+    cancelledTotal,
+    busiestDay,
+  }
+}
+
+export function AdminDashboard() {
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia("(max-width: 767px)").matches)
+  const [period, setPeriod] = useState(getInitialPeriod)
+  const [dashboard, setDashboard] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [showCreated, setShowCreated] = useState(true)
+  const [showCompleted, setShowCompleted] = useState(true)
+  const [showTable, setShowTable] = useState(false)
+  const chartRef = useRef(null)
+  const chartInstanceRef = useRef(null)
 
   useEffect(() => {
-    if (!canvasRef.current) return undefined;
-    const context = canvasRef.current.getContext("2d");
-    if (!context) return undefined;
+    const media = window.matchMedia("(max-width: 767px)")
+    const handleChange = (event) => setIsMobile(event.matches)
 
-    const root = document.documentElement;
-    const styles = getComputedStyle(root);
-    chartRef.current?.destroy();
-    chartRef.current = new Chart(context, {
+    setIsMobile(media.matches)
+    media.addEventListener("change", handleChange)
+
+    return () => media.removeEventListener("change", handleChange)
+  }, [])
+
+  useEffect(() => {
+    setIsLoading(true)
+    setErrorMessage("")
+
+    getAdminDashboard({
+      params: {
+        startDate: period.startDate,
+        endDate: period.endDate,
+      },
+    })
+      .then((response) => {
+        setDashboard(normalizeDashboardResponse(response, period))
+      })
+      .catch((error) => setErrorMessage(error instanceof Error ? error.message : "Não foi possível carregar o dashboard."))
+      .finally(() => setIsLoading(false))
+  }, [period])
+
+  const visibleDays = isMobile ? 7 : 15
+
+  const chartDaily = useMemo(
+    () => dashboard?.daily?.slice(-visibleDays) ?? [],
+    [dashboard, visibleDays],
+  )
+
+  const createdTotal = useMemo(
+    () => chartDaily.reduce((total, item) => total + item.created, 0),
+    [chartDaily],
+  )
+
+  const completedTotal = useMemo(
+    () => chartDaily.reduce((total, item) => total + item.completed, 0),
+    [chartDaily],
+  )
+
+  const completedTotalPeriod = useMemo(
+    () => dashboard?.daily?.reduce((total, item) => total + item.completed, 0) ?? 0,
+    [dashboard],
+  )
+
+  useEffect(() => {
+    if (!chartRef.current || chartDaily.length === 0) {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy()
+        chartInstanceRef.current = null
+      }
+      return
+    }
+
+    const style = getComputedStyle(document.documentElement)
+    const createdColor = style.getPropertyValue("--chart-created").trim() || "#7d0bb6"
+    const completedColor = style.getPropertyValue("--chart-completed").trim() || "#bb920a"
+    const labels = chartDaily.map((item) => formatShortDate(item.date))
+
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.destroy()
+    }
+
+    chartInstanceRef.current = new Chart(chartRef.current, {
       type: "line",
       data: {
-        labels: daily.map((item) => formatDate(item.date)),
+        labels,
         datasets: [
           {
             label: "Criados",
-            hidden: !visibleSeries.created,
-            data: daily.map((item) => item.created),
-            borderColor: styles.getPropertyValue("--chart-created").trim(),
-            backgroundColor: styles.getPropertyValue("--chart-created").trim(),
+            data: chartDaily.map((item) => item.created),
+            borderColor: createdColor,
+            backgroundColor: createdColor,
             borderWidth: 3,
-            pointRadius: 4,
-            pointHoverRadius: 6,
             tension: 0.35,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            hidden: !showCreated,
           },
           {
             label: "Concluídos",
-            hidden: !visibleSeries.completed,
-            data: daily.map((item) => item.completed),
-            borderColor: styles.getPropertyValue("--chart-completed").trim(),
-            backgroundColor: styles
-              .getPropertyValue("--chart-completed")
-              .trim(),
+            data: chartDaily.map((item) => item.completed),
+            borderColor: completedColor,
+            backgroundColor: completedColor,
             borderWidth: 3,
-            pointRadius: 4,
-            pointHoverRadius: 6,
             tension: 0.35,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            hidden: !showCompleted,
           },
         ],
       },
       options: {
-        responsive: true,
         maintainAspectRatio: false,
-        interaction: { mode: "index", intersect: false },
         plugins: {
           legend: { display: false },
           tooltip: {
-            callbacks: {
-              title: (items) => {
-                const item = daily[items[0].dataIndex];
-                return `${item.date.toLocaleDateString("pt-BR", { weekday: "long" })} · ${formatDate(item.date)}`;
-              },
-            },
+            mode: "index",
+            intersect: false,
           },
+        },
+        interaction: {
+          mode: "nearest",
+          axis: "x",
+          intersect: false,
         },
         scales: {
           x: {
+            grid: { display: false },
             title: {
               display: true,
               text: "Dia do período",
-              color: styles.getPropertyValue("--color-text-secondary").trim(),
+              color: "#67665f",
+              font: { size: 12, family: "Roboto" },
             },
-            ticks: {
-              color: styles.getPropertyValue("--color-text-secondary").trim(),
-              maxRotation: 0,
-              autoSkip: isMobile,
-            },
-            grid: { display: false },
           },
           y: {
             beginAtZero: true,
-            suggestedMax: 16,
-            ticks: {
-              stepSize: 4,
-              color: styles.getPropertyValue("--color-text-secondary").trim(),
-            },
+            ticks: { precision: 0 },
             title: {
               display: true,
               text: "Nº de agendamentos",
-              color: styles.getPropertyValue("--color-text-secondary").trim(),
+              color: "#67665f",
+              font: { size: 12, family: "Roboto" },
             },
-            grid: { color: styles.getPropertyValue("--color-border").trim() },
           },
         },
       },
-    });
-
-    return () => {
-      chartRef.current?.destroy();
-      chartRef.current = null;
-    };
-  }, [daily, isMobile, visibleSeries]);
-
-  return (
-    <div className={styles.chartCanvas}>
-      <canvas
-        ref={canvasRef}
-        aria-label="Gráfico de agendamentos criados e concluídos"
-        role="img"
-      />
-    </div>
-  );
-}
-
-export function AdminDashboard() {
-  const [period, setPeriod] = useState(periodFor);
-  const [dashboard, setDashboard] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 767);
-  const [visibleSeries, setVisibleSeries] = useState({
-    created: true,
-    completed: true,
-  });
-  const [isTableOpen, setIsTableOpen] = useState(false);
-
-  useEffect(() => {
-    const updateViewport = () => setIsMobile(window.innerWidth <= 767);
-    window.addEventListener("resize", updateViewport);
-    return () => window.removeEventListener("resize", updateViewport);
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-    getAdminDashboard({
-      params: {
-        startDate: isoDate(period.start),
-        endDate: isoDate(period.end),
-      },
     })
-      .then((response) => {
-        if (isMounted) setDashboard(normalizeDashboardData(response));
-      })
-      .catch((error) => {
-        if (isMounted) {
-          if (!import.meta.env.VITE_API_BASE_URL) {
-            setDashboard(
-              normalizeDashboardData(
-                getDemoDashboard({
-                  endDate: isoDate(period.end),
-                }),
-              ),
-            );
-            return;
-          }
-
-          setDashboard(null);
-          setErrorMessage(
-            error instanceof Error
-              ? error.message
-              : "Não foi possível carregar o dashboard.",
-          );
-        }
-      })
-      .finally(() => {
-        if (isMounted) setIsLoading(false);
-      });
 
     return () => {
-      isMounted = false;
-    };
-  }, [period]);
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy()
+        chartInstanceRef.current = null
+      }
+    }
+  }, [chartDaily, showCompleted, showCreated])
 
-  const metrics = useMemo(
-    () => dashboard && getDashboardMetrics(dashboard, isMobile ? 7 : 15),
-    [dashboard, isMobile],
-  );
+  const shiftPeriod = (days) => {
+    const start = parseApiDate(period.startDate)
+    const end = parseApiDate(period.endDate)
+    start.setDate(start.getDate() + days)
+    end.setDate(end.getDate() + days)
 
-  const canGoForward = period.end < TODAY;
-  const changePeriod = (days) => {
-    setIsLoading(true);
-    setErrorMessage("");
-    setPeriod((current) => shiftPeriod(current, days));
-  };
-
-  if (isLoading) {
-    return (
-      <main className={styles.page}>
-        <div className={styles.content}>
-          <p className={styles.status} role="status">
-            Carregando dashboard...
-          </p>
-        </div>
-      </main>
-    );
+    setPeriod({
+      startDate: formatDateToApi(start),
+      endDate: formatDateToApi(end),
+    })
   }
-
-  if (errorMessage) {
-    return (
-      <main className={styles.page}>
-        <div className={styles.content}>
-          <p className={styles.statusError} role="alert">
-            {errorMessage}
-          </p>
-        </div>
-      </main>
-    );
-  }
-
-  if (!dashboard || !metrics) return null;
-
-  const periodLabel = `${formatDate(period.start)} – ${formatDate(period.end)}`;
-  const fullPeriodLabel = `${periodLabel}/${period.end.getFullYear()}`;
-  const createdValue = new Intl.NumberFormat("pt-BR").format(
-    metrics.createdTotal,
-  );
-  const completedValue = new Intl.NumberFormat("pt-BR").format(
-    metrics.completedTotal,
-  );
 
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        <div className={styles.breadcrumb}>
-          <DashboardIcon />
-          <span>Área administrativa</span>
-          <b>/</b>
-          <strong>Dashboard</strong>
-        </div>
+        <div className={styles.breadcrumb}><DashboardIcon /><span>Área administrativa</span><b>/</b><strong>Dashboard</strong></div>
         <header className={styles.header}>
           <div>
             <p className={styles.eyebrow}>SEU NEGÓCIO, EM PERSPECTIVA</p>
             <h1>Dashboard administrativo</h1>
-            <p className={styles.greeting}>
-              Olá, {dashboard.adminName.split(" ")[0]}. Um olhar sobre os seus
-              últimos 15 dias.
-            </p>
+            {!isLoading && !errorMessage && dashboard && (
+              <p className={styles.greeting}>Olá, {dashboard.adminName.split(" ")[0]}. Um olhar sobre os seus últimos 15 dias.</p>
+            )}
           </div>
-          <div className={styles.profile}>
-            <Icon>
-              <UserIcon />
-            </Icon>
-            <span>
-              <b>{dashboard.adminName}</b>
-              <small>Administradora</small>
-            </span>
-            <i aria-label="Acesso demonstrativo" />
-          </div>
-        </header>
-
-        <section className={styles.overview} aria-labelledby="overview-title">
-          <div className={styles.sectionHeading}>
-            <h2 id="overview-title">
-              <span />
-              Visão geral
-            </h2>
-            <span className={styles.badge}>Dados demonstrativos</span>
-          </div>
-          <div className={styles.periodControls}>
-            <button
-              type="button"
-              aria-label="Ver quinzena anterior"
-              onClick={() => changePeriod(-15)}
-            >
-              ‹
-            </button>
-            <Icon>
-              <CalendarIcon />
-            </Icon>
-            <span>
-              <b>{periodLabel}</b>
-              <small>{period.end.getFullYear()} · 15 dias</small>
-            </span>
-            <button
-              type="button"
-              aria-label="Ver próxima quinzena"
-              disabled={!canGoForward}
-              onClick={() => changePeriod(15)}
-            >
-              ›
-            </button>
-          </div>
-        </section>
-
-        <section className={styles.kpis} aria-label="Indicadores do dashboard">
-          <article className={styles.card}>
-            <div className={styles.cardTop}>
-              <span>Agendamentos cancelados</span>
-              <Icon>
-                <IndicatorIcon />
-              </Icon>
-            </div>
-            <strong>{String(dashboard.cancelled).padStart(2, "0")}</strong>
-            <small className={styles.positive}>
-              ↘ {metrics.cancellationChange}%{" "}
-              <em>vs. 15 dias anteriores ({dashboard.previousCancelled})</em>
-            </small>
-          </article>
-          <article className={`${styles.card} ${styles.highlight}`}>
-            <div className={styles.cardTop}>
-              <span>Estimativa de ganhos</span>
-              <Icon>
-                <IndicatorIcon type="wallet" />
-              </Icon>
-            </div>
-            <strong>
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(dashboard.completed * dashboard.averageTicket)}
-            </strong>
-            <small>
-              {dashboard.completed} atendimentos concluídos
-            </small>
-          </article>
-          <article className={styles.card}>
-            <div className={styles.cardTop}>
-              <span>Dia de maior movimento</span>
-              <Icon>
-                <CalendarIcon />
-              </Icon>
-            </div>
-            <strong>
-              {metrics.busiest.date
-                .toLocaleDateString("pt-BR", { weekday: "long" })
-                .replace(/^./, (letter) => letter.toUpperCase())}
-            </strong>
-            <small>
-              {formatDate(metrics.busiest.date)} · {metrics.busiest.created}{" "}
-              agendamentos criados
-            </small>
-          </article>
-        </section>
-
-        <section className={styles.chartPanel} aria-labelledby="chart-title">
-          <div className={styles.chartHeader}>
-            <div>
-              <p className={styles.eyebrow}>ACOMPANHE SUA EVOLUÇÃO</p>
-              <h2 id="chart-title">Agendamentos criados e concluídos</h2>
-              <p className={styles.chartDescription}>
-                {isMobile
-                  ? "Criados e concluídos nos últimos 7 dias do período"
-                  : "Criados e concluídos nos últimos 15 dias do período"}{" "}
-                · {fullPeriodLabel}.
-              </p>
-            </div>
-            <span className={styles.periodBadge}>
-              {isMobile ? "7 dias" : "15 dias"}
-            </span>
-          </div>
-          <div className={styles.totals}>
-            <span className={visibleSeries.created ? "" : styles.muted}>
-              <i className={styles.createdDot} />
-              <b>{createdValue}</b> criados no período
-            </span>
-            <span className={visibleSeries.completed ? "" : styles.muted}>
-              <i className={styles.completedDot} />
-              <b>{completedValue}</b> concluídos no período
-            </span>
-          </div>
-          <div className={styles.legend}>
-            <button
-              type="button"
-              aria-pressed={visibleSeries.created}
-              className={!visibleSeries.created ? styles.hiddenSeries : ""}
-              onClick={() =>
-                setVisibleSeries((current) => ({
-                  ...current,
-                  created: !current.created,
-                }))
-              }
-            >
-              <i className={styles.createdDot} />
-              Criados
-            </button>
-            <button
-              type="button"
-              aria-pressed={visibleSeries.completed}
-              className={!visibleSeries.completed ? styles.hiddenSeries : ""}
-              onClick={() =>
-                setVisibleSeries((current) => ({
-                  ...current,
-                  completed: !current.completed,
-                }))
-              }
-            >
-              <i className={styles.completedDot} />
-              Concluídos
-            </button>
-          </div>
-          <DashboardChart
-            daily={metrics.daily}
-            isMobile={isMobile}
-            visibleSeries={visibleSeries}
-          />
-          <p className={styles.chartHint}>
-            ⓘ Passe o mouse ou toque no gráfico para ver os detalhes.
-          </p>
-          <button
-            className={styles.tableToggle}
-            type="button"
-            aria-expanded={isTableOpen}
-            onClick={() => setIsTableOpen((current) => !current)}
-          >
-            {isTableOpen ? "Ocultar tabela" : "Ver dados em tabela"} ↗
-          </button>
-          {isTableOpen && (
-            <div className={styles.tableWrap}>
-              <p>Agendamentos demonstrativos · {periodLabel}</p>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Criados</th>
-                    <th>Concluídos</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {metrics.daily.map((item) => (
-                    <tr key={item.date.toISOString()}>
-                      <td>{formatDate(item.date)}</td>
-                      <td>{item.created}</td>
-                      <td>{item.completed}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          {!isLoading && !errorMessage && dashboard && (
+            <article className={styles.profile} aria-label="Perfil administrador">
+              <span className={styles.icon}><UserIcon /></span>
+              <span>
+                <b>{dashboard.adminName.split(" ")[0]}</b>
+                <small>Administradora</small>
+              </span>
+              <i aria-hidden="true" />
+            </article>
           )}
-        </section>
+        </header>
+        {isLoading && <p className={styles.status} role="status">Carregando dashboard...</p>}
+        {!isLoading && errorMessage && <p className={styles.statusError} role="alert">{errorMessage}</p>}
+        {!isLoading && !errorMessage && dashboard && (
+          <>
+            <section className={styles.overview} aria-label="Visão geral">
+              <div className={styles.sectionHeading}>
+                <h2><span aria-hidden="true" />Visão geral</h2>
+                <p className={styles.badge}>Dados demonstrativos</p>
+              </div>
+              <div className={styles.periodControls}>
+                <button type="button" aria-label="Período anterior" onClick={() => shiftPeriod(-15)}>‹</button>
+                <CalendarIcon className={styles.icon} />
+                <span>
+                  <b>{`${formatShortDate(dashboard.startDate)} - ${formatShortDate(dashboard.endDate)}`}</b>
+                  <small>{`${dashboard.endDate.slice(0, 4)} · ${dashboard.periodDays} dias`}</small>
+                </span>
+                <button type="button" aria-label="Próximo período" onClick={() => shiftPeriod(15)}>›</button>
+              </div>
+            </section>
 
-        <aside className={styles.support}>
-          <span className={styles.supportIcon}>✧</span>
-          <div>
-            <h2>Mais organização. Mais tempo para criar.</h2>
-            <p>
-              Acompanhe os indicadores e planeje seus próximos dias de
-              atendimento.
+            <section className={styles.kpis} aria-label="Indicadores do dashboard">
+              <article className={styles.card}>
+                <div className={styles.cardTop}><span>Agendamentos cancelados</span><span className={styles.icon}><CalendarIcon /></span></div>
+                <strong>{String(dashboard.cancelledTotal).padStart(2, "0")}</strong>
+                <small className={styles.positive}><em>{`${dashboard.cancellationRate.toFixed(2)}% de taxa no período`}</em></small>
+              </article>
+
+              <article className={`${styles.card} ${styles.highlight}`}>
+                <div className={styles.cardTop}><span>Estimativa de ganhos</span><span className={styles.icon}><WalletIcon /></span></div>
+                <strong>{formatMoney(dashboard.completedRevenue)}</strong>
+                <small>{`${completedTotalPeriod} atendimentos concluídos`}</small>
+              </article>
+
+              <article className={styles.card}>
+                <div className={styles.cardTop}><span>Dia de maior movimento</span><span className={styles.icon}><CalendarIcon /></span></div>
+                <strong>{dashboard.busiestDay ? formatWeekDay(dashboard.busiestDay.date) : "—"}</strong>
+                <small>{dashboard.busiestDay ? `${formatShortDate(dashboard.busiestDay.date)} · ${dashboard.busiestDay.created} agendamentos criados` : "Sem dados suficientes"}</small>
+              </article>
+            </section>
+
+            <section className={styles.chartPanel} aria-label="Evolução de agendamentos">
+              <div className={styles.chartHeader}>
+                <div>
+                  <p className={styles.eyebrow}>ACOMPANHE SUA EVOLUÇÃO</p>
+                  <h2>Agendamentos criados e concluídos</h2>
+                  <p className={styles.chartDescription}>
+                    {`Criados e concluídos nos últimos ${visibleDays} dias do período ·`}
+                    {` ${chartDaily[0] ? formatShortDate(chartDaily[0].date) : "--/--"} — ${chartDaily.at(-1) ? formatShortDate(chartDaily.at(-1).date) : "--/--"}`}
+                  </p>
+                </div>
+                <p className={styles.periodBadge}>{`${visibleDays} dias`}</p>
+              </div>
+
+              <div className={styles.totals}>
+                <span><i className={styles.createdDot} /><b>{createdTotal}</b>criados no período</span>
+                <span><i className={styles.completedDot} /><b>{completedTotal}</b>concluídos no período</span>
+              </div>
+
+              <div className={styles.legend}>
+                <button
+                  className={showCreated ? "" : styles.hiddenSeries}
+                  type="button"
+                  onClick={() => setShowCreated((current) => !current)}
+                >
+                  <i className={styles.createdDot} />Criados
+                </button>
+                <button
+                  className={showCompleted ? "" : styles.hiddenSeries}
+                  type="button"
+                  onClick={() => setShowCompleted((current) => !current)}
+                >
+                  <i className={styles.completedDot} />Concluídos
+                </button>
+              </div>
+
+              <div className={styles.chartCanvas}>
+                <canvas ref={chartRef} aria-label="Gráfico de linha de agendamentos" role="img" />
+              </div>
+
+              <p className={styles.chartHint}>Passe o mouse ou toque no gráfico para ver os detalhes.</p>
+
+              <button className={styles.tableToggle} type="button" onClick={() => setShowTable((current) => !current)}>
+                {showTable ? "Ocultar tabela" : "Ver dados em tabela"} <ArrowUpRightIcon />
+              </button>
+
+              {showTable && (
+                <div className={styles.tableWrap}>
+                  <p>{`Agendamentos demonstrativos · ${chartDaily[0] ? formatShortDate(chartDaily[0].date) : "--/--"} — ${chartDaily.at(-1) ? formatShortDate(chartDaily.at(-1).date) : "--/--"}`}</p>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Criados</th>
+                        <th>Concluídos</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {chartDaily.map((item) => (
+                        <tr key={item.date}>
+                          <td>{formatShortDate(item.date)}</td>
+                          <td>{item.created}</td>
+                          <td>{item.completed}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+
+            <section className={styles.support}>
+              <p className={styles.supportIcon} aria-hidden="true">✧</p>
+              <div>
+                <h2>Mais organização. Mais tempo pra criar.</h2>
+                <p>Acompanhe os indicadores e planeje seus próximos dias de atendimento.</p>
+              </div>
+              <a href="/admin/agenda">Abrir minha agenda <ArrowUpRightIcon /></a>
+            </section>
+
+            <p className={styles.notice}>
+              Visualização demonstrativa. Os indicadores não estão conectados aos agendamentos do protótipo.
+              Criados e concluídos são contagens independentes por dia.
             </p>
-          </div>
-          <a href="/admin/agenda">Abrir minha agenda ↗</a>
-        </aside>
-        <p className={styles.notice}>
-          Visualização demonstrativa. Os indicadores não estão conectados aos
-          agendamentos do protótipo. Criados e concluídos são contagens
-          independentes por dia.
-        </p>
+          </>
+        )}
       </div>
     </main>
-  );
+  )
 }

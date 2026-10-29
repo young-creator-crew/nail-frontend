@@ -75,8 +75,24 @@
   color: var(--color-action-primary);
 }
 
+.logoutButton {
+  padding: 14px 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-action-primary);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.logoutButton:hover {
+  color: var(--color-text-primary);
+}
+
 .closeButton:focus-visible,
-.navigation a:focus-visible {
+.navigation a:focus-visible,
+.logoutButton:focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: 4px;
 }

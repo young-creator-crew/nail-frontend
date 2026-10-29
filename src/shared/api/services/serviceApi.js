@@ -1,8 +1,8 @@
 export {
   getServices,
+  getAdminServices,
   getServiceById,
   createService,
   updateService,
-  updateServiceImage,
-  deleteService,
+  deactivateService,
 } from "../../../entities/service/api/serviceApi"

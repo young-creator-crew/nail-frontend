@@ -21,14 +21,14 @@ export function ServiceForm({
   onSubmit,
 }) {
   const [form, setForm] = useState(() => ({
-    name: initialService?.name ?? "",
+    name: initialService?.serviceName ?? "",
     category: initialService?.category ?? "",
-    description: initialService?.description ?? "",
-    price: initialService?.price ?? "",
-    estimatedDurationMinutes: initialService?.estimatedDurationMinutes ?? "",
+    description: initialService?.serviceDescription ?? "",
+    price: initialService?.options?.[0]?.price ?? "",
+    estimatedDurationMinutes: initialService?.options?.[0]?.durationMinutes ?? "",
   }))
   const [selectedImage, setSelectedImage] = useState(null)
-  const [imagePreview, setImagePreview] = useState(initialService?.imageUrl ?? "")
+  const [imagePreview, setImagePreview] = useState(initialService?.photoUrl ?? "")
   const [feedback, setFeedback] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -97,7 +97,7 @@ export function ServiceForm({
     try {
       await onDelete()
     } catch (error) {
-      setFeedback(getErrorMessage(error, "Não foi possível excluir o serviço."))
+      setFeedback(getErrorMessage(error, "Não foi possível desativar o serviço."))
       setIsDeleting(false)
     }
   }
@@ -138,7 +138,6 @@ export function ServiceForm({
               className={styles.fileInput}
               id="service-image"
               onChange={selectImage}
-              required={!isEditing && !selectedImage}
               type="file"
             />
             <label className={styles.imagePicker} htmlFor="service-image">
@@ -234,7 +233,7 @@ export function ServiceForm({
             {isEditing && (
               isConfirmingDelete ? (
                 <div className={styles.deleteConfirmation} role="alertdialog" aria-labelledby="delete-service-title">
-                  <p id="delete-service-title">Deseja excluir este serviço?</p>
+                  <p id="delete-service-title">Deseja desativar este serviço?</p>
                   <div className={styles.deleteActions}>
                     <button
                       className={styles.cancelDeleteButton}
@@ -250,7 +249,7 @@ export function ServiceForm({
                       icon="×"
                       onClick={handleDelete}
                     >
-                      {isDeleting ? "Excluindo..." : "Confirmar exclusão"}
+                      {isDeleting ? "Desativando..." : "Confirmar desativação"}
                     </ButtonAction>
                   </div>
                 </div>
@@ -261,7 +260,7 @@ export function ServiceForm({
                   onClick={() => setIsConfirmingDelete(true)}
                   type="button"
                 >
-                  Excluir serviço
+                  Desativar serviço
                 </button>
               )
             )}

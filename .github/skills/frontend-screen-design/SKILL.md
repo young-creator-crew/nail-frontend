@@ -98,9 +98,8 @@ Use existing components before adding alternatives:
   icons, and `iconPosition="left"`.
 - `ButtonBack` for secondary back navigation.
 - `Input` for labeled inputs and adornments.
-- `ProductModal` for service/catalog cards. Supply real `name`, `category`,
-  `description`, `price`, image, and route values; do not restore placeholder
-  defaults.
+- `ServiceCard` for service/catalog cards. Supply real `name`, `description`,
+  image, and route values.
 - `Navbar`, `MobileSidebar`, and `Footer` are rendered by `App.jsx`; pages
   should not render duplicate global chrome.
 
@@ -147,10 +146,15 @@ Configure paths through the variables in `.env.example`.
 
 For service screens, preserve:
 
-- `POST /procedures` with `FormData` fields `name`, `category`, `description`,
-  `price`, `estimatedDurationMinutes`, and `image`.
-- `GET`, `PUT`, and `DELETE /procedures/{id}`.
-- `PUT /procedures/{id}/image` with `FormData`.
+- `POST /services` with multipart field `service` (JSON) and optional `foto`.
+- `GET` and `PUT /services/{id}`.
+- `DELETE /services/{id}/deactivate` for deactivation.
+- `GET /services` (catálogo público) and `GET /services/admin` (gestão).
+
+For dashboard screens:
+
+- Use `GET /dashboard/summary` with required query params `startDate` and
+  `endDate`.
 
 Normalize API errors through the shared client and surface the resulting
 message in the page state.

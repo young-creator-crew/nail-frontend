@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { clearSessionUser } from "../../shared/auth/session"
 import styles from "./MobileSidebar.module.css"
 
 export function MobileSidebar({
@@ -8,6 +9,12 @@ export function MobileSidebar({
   isOpen,
   onClose,
 }) {
+  const handleLogout = () => {
+    clearSessionUser()
+    onClose()
+    window.location.assign("/entrar")
+  }
+
   useEffect(() => {
     if (!isOpen) {
       return undefined
@@ -57,7 +64,6 @@ export function MobileSidebar({
         <nav className={styles.navigation} aria-label="Navegação móvel">
           {isAdmin ? (
             <>
-              <a href="/admin" onClick={onClose}>Início</a>
               <a href="/admin/dashboard" onClick={onClose}>Dashboard</a>
               <a href="/admin/servicos" onClick={onClose}>Catálogo</a>
               <a href="/admin/agenda" onClick={onClose}>Minha agenda</a>
@@ -70,6 +76,9 @@ export function MobileSidebar({
             </>
           )}
           <a href={accountHref} onClick={onClose}>{accountLabel}</a>
+          <button className={styles.logoutButton} type="button" onClick={handleLogout}>
+            Sair
+          </button>
         </nav>
       </aside>
     </>

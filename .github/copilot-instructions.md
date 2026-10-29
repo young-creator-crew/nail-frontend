@@ -59,16 +59,21 @@ API errors.
 
 Keep endpoint paths in `src/shared/api/endpoints.js`. Paths are configurable
 through Vite environment variables documented in `.env.example`, including
-`VITE_API_BASE_URL`, timeout, procedures, appointments, profile, registration,
+`VITE_API_BASE_URL`, timeout, services, users, dashboard, registration,
 and login paths. Domain-specific calls belong in
 `src/shared/api/services/` (`serviceApi.js`, `authApi.js`, and `profileApi.js`).
 
 Service creation and image updates use `FormData`; preserve the existing field
 names and resource paths:
 
-- `POST /procedures`
-- `GET`/`PUT`/`DELETE /procedures/{id}`
-- `PUT /procedures/{id}/image`
+- `POST /services` with multipart field `service` (JSON) and optional `foto`
+- `GET`/`PUT /services/{id}`
+- `DELETE /services/{id}/deactivate`
+- `GET /services/admin`
+
+Dashboard endpoint:
+
+- `GET /dashboard/summary` with required query params `startDate` and `endDate`
 
 ## Code conventions
 

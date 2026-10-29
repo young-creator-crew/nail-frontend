@@ -1,9 +1,14 @@
-import { useState } from "react"
-import { updateClientProfile } from "../../../entities/profile/api/profileApi"
+import { useEffect, useState } from "react"
+import { getProfile, updateProfile } from "../../../entities/profile/api/profileApi"
+import { clearSessionUser, getSessionUser, setSessionUser } from "../../../shared/auth/session"
 import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
 import { CalendarIcon, UserIcon } from "../../../shared/ui/icons/Icons"
 import { Input } from "../../../shared/ui/text-input/Input"
 import styles from "./Perfil.module.css"
+
+function resolveUserId(user) {
+  return user?.id ?? user?.idNailUser ?? user?.idUser ?? null
+}
 
 function EmptyAppointments({ history = false }) {
   return (
@@ -16,24 +21,75 @@ function EmptyAppointments({ history = false }) {
 }
 
 export function Perfil({ isAdmin = false }) {
-  const [profile, setProfile] = useState({
-    name: isAdmin ? "[NOME DA ADMINISTRADORA]" : "[NOME DO CLIENTE]",
-    password: "",
-  })
-  const [draftName, setDraftName] = useState(profile.name)
+  const sessionUser = getSessionUser()
+  const sessionUserId = resolveUserId(sessionUser)
+  const [profile, setProfile] = useState(sessionUser)
+  const [draftName, setDraftName] = useState(sessionUser?.name ?? "")
+  const [draftEmail, setDraftEmail] = useState(sessionUser?.email ?? "")
+  const [draftPhone, setDraftPhone] = useState(sessionUser?.phone ?? "")
+  const [isLoading, setIsLoading] = useState(Boolean(sessionUserId))
   const [isEditing, setIsEditing] = useState(false)
   const [feedback, setFeedback] = useState("")
 
+  useEffect(() => {
+    if (!sessionUserId) {
+      setIsLoading(false)
+      return
+    }
+
+    setIsLoading(true)
+    getProfile(sessionUserId)
+      .then((result) => {
+        setProfile(result)
+        setDraftName(result.name)
+        setDraftEmail(result.email)
+        setDraftPhone(result.phone ?? "")
+
+        const currentSession = getSessionUser() ?? {}
+        setSessionUser({
+          ...currentSession,
+          ...result,
+          id: resolveUserId(result) ?? sessionUserId,
+        })
+      })
+      .catch((error) => setFeedback(error instanceof Error ? error.message : "Não foi possível carregar o perfil."))
+      .finally(() => setIsLoading(false))
+  }, [sessionUserId])
+
   const saveProfile = async (event) => {
     event.preventDefault()
+
+    if (!sessionUserId) {
+      setFeedback("Não foi possível identificar o usuário da sessão.")
+      return
+    }
+
     try {
-      await updateClientProfile({ name: draftName, password: profile.password })
-      setProfile((current) => ({ ...current, name: draftName }))
+      const result = await updateProfile(sessionUserId, {
+        name: draftName,
+        email: draftEmail,
+        phone: draftPhone || null,
+      })
+      setProfile(result)
+
+      const currentSession = getSessionUser() ?? {}
+      setSessionUser({
+        ...currentSession,
+        ...result,
+        id: resolveUserId(result) ?? sessionUserId,
+      })
+
       setIsEditing(false)
       setFeedback("Dados atualizados.")
     } catch (error) {
       setFeedback(error instanceof Error ? error.message : "Não foi possível atualizar os dados.")
     }
+
+  }
+
+  const handleLogout = () => {
+    clearSessionUser()
+    window.location.assign("/entrar")
   }
 
   return (
@@ -46,23 +102,28 @@ export function Perfil({ isAdmin = false }) {
           {isAdmin ? "Meu perfil" : <>Meu perfil e<br className={styles.mobileBreak} /> agendamentos</>}
         </h1>
 
-        <section className={styles.profileCard} aria-label="Identificação do cliente">
+        {isLoading && <p role="status">Carregando perfil...</p>}
+        {!isLoading && <section className={styles.profileCard} aria-label="Identificação do cliente">
           <div className={styles.profileInfo}>
             <div className={styles.avatar}><UserIcon /></div>
             <div>
-              <h2>{profile.name}</h2>
+              <h2>{profile?.name ?? sessionUser?.name ?? "Usuária"}</h2>
               <p>Um momento seu, sempre à mão.</p>
             </div>
           </div>
           <button className={styles.outlineButton} type="button" onClick={() => setIsEditing((current) => !current)}>
             {isEditing ? "Fechar edição" : "Editar perfil"}
           </button>
-        </section>
+          <button className={styles.logoutButton} type="button" onClick={handleLogout}>
+            Sair
+          </button>
+        </section>}
 
         {isEditing && (
           <form className={styles.editForm} onSubmit={saveProfile}>
             <Input label="Nome" value={draftName} onChange={(event) => setDraftName(event.target.value)} required />
-            <Input label="Alterar senha" placeholder="Nova senha (simulada)" type="password" />
+            <Input label="E-mail" type="email" value={draftEmail} onChange={(event) => setDraftEmail(event.target.value)} required />
+            <Input label="Telefone" value={draftPhone} onChange={(event) => setDraftPhone(event.target.value)} />
             <ButtonAction icon="">Salvar alterações</ButtonAction>
           </form>
         )}

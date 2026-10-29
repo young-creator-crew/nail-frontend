@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
 import { ServiceCard } from "../../../entities/service/ui/ServiceCard"
-import { getServices } from "../../../entities/service/api/serviceApi"
+import { getAdminServices } from "../../../entities/service/api/serviceApi"
+import { getServiceImage } from "../../../entities/service/model/mock-service-images"
 import styles from "./MyServices.module.css"
 
 export function MyServices() {
@@ -12,7 +13,7 @@ export function MyServices() {
   useEffect(() => {
     let isMounted = true
 
-    getServices()
+    getAdminServices()
       .then((response) => {
         if (!Array.isArray(response)) {
           throw new Error("A API retornou uma lista de serviços inválida.")
@@ -72,14 +73,12 @@ export function MyServices() {
           <section className={styles.services} aria-label="Serviços cadastrados">
             {services.map((service) => (
               <ServiceCard
-                category={service.category}
-                description={service.description}
-                href={`/admin/meus-servicos/editar?id=${service.id}`}
-                image={service.imageUrl}
+                description={service.serviceDescription}
+                href={`/admin/meus-servicos/editar?id=${service.idNailService}`}
+                image={getServiceImage(service)}
                 isAdmin
-                key={service.id}
-                name={service.name}
-                price={service.price}
+                key={service.idNailService}
+                name={service.serviceName}
               />
             ))}
           </section>

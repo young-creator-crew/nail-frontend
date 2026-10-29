@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { loginUser } from "../../../shared/api/services/authApi"
+import { setSessionUser } from "../../../shared/auth/session"
 import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
 import { ButtonBack } from "../../../shared/ui/button-back/ButtonBack"
 import { PasswordIcon } from "../../../shared/ui/icons/Icons"
@@ -8,7 +9,7 @@ import styles from "./Login.module.css"
 
 export function Login() {
   const [formData, setFormData] = useState({
-    identification: "",
+    email: "",
     password: "",
   })
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -27,8 +28,12 @@ export function Login() {
     setFeedback("")
 
     try {
-      await loginUser(formData)
-      setFeedback("Login realizado com sucesso.")
+      const user = await loginUser({
+        email: formData.email.trim(),
+        password: formData.password,
+      })
+      setSessionUser(user)
+      window.location.assign(user.userType === "ADMIN" ? "/admin/dashboard" : "/perfil")
     } catch (error) {
       setFeedback(error instanceof Error
         ? error.message
@@ -54,12 +59,12 @@ export function Login() {
         <form className={styles.form} onSubmit={handleSubmit}>
           <Input
             autoComplete="username"
-            label="Identificação"
-            name="identification"
+            label="E-mail"
+            name="email"
             onChange={updateField}
-            placeholder="Sua identificação"
+            placeholder="seu@email.com"
             required
-            value={formData.identification}
+            value={formData.email}
           />
           <Input
             autoComplete="current-password"

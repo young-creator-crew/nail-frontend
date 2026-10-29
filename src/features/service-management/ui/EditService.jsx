@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
 import {
-  deleteService,
+  deactivateService,
   getServiceById,
   updateService,
-  updateServiceImage,
 } from "../../../entities/service/api/serviceApi"
 import { ServiceForm } from "./ServiceForm"
 
@@ -50,27 +49,32 @@ export function EditService() {
   }, [serviceId])
 
   const handleSubmit = async (updatedService) => {
+    const currentOption = service?.options?.[0]
+
     await updateService(serviceId, {
-      name: updatedService.name,
-      category: updatedService.category,
-      description: updatedService.description,
-      price: updatedService.price,
-      estimatedDurationMinutes: updatedService.estimatedDurationMinutes,
-    })
-    if (updatedService.image) {
-      await updateServiceImage(serviceId, updatedService.image)
-    }
+      serviceName: updatedService.name,
+      serviceDescription: updatedService.description,
+      options: [{
+        ...(currentOption?.idNailServiceOption
+          ? { idNailServiceOption: currentOption.idNailServiceOption }
+          : {}),
+        optionType: currentOption?.optionType ?? "APLICACAO",
+        price: updatedService.price,
+        durationMinutes: updatedService.estimatedDurationMinutes,
+      }],
+      addons: [],
+    }, updatedService.image)
     window.location.assign("/admin/meus-servicos")
   }
 
   const handleDelete = async () => {
-    await deleteService(serviceId)
+    await deactivateService(serviceId)
     window.location.assign("/admin/meus-servicos")
   }
 
   return (
     <ServiceForm
-      key={service?.id ?? "loading"}
+      key={service?.idNailService ?? "loading"}
       initialService={service}
       isEditing
       isLoading={isLoading}

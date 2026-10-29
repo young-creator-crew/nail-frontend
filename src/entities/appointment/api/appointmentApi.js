@@ -1,13 +1,10 @@
-import { api } from "../../../shared/api/apiClient"
-import { API_ENDPOINTS } from "../../../shared/api/endpoints"
-
 export function getClientAppointments(config = {}) {
-  return api.get(API_ENDPOINTS.clientAppointments, config)
+  void config
+  return Promise.reject(new Error("A API atual não possui rota para listar agendamentos do cliente."))
 }
 
 export function getAdminAppointments(date, config = {}) {
-  return api.get(API_ENDPOINTS.adminAppointments, {
-    ...config,
-    params: { ...config.params, date },
-  })
+  void date
+  void config
+  return Promise.reject(new Error("A API atual não possui rota para listar agenda administrativa."))
 }
