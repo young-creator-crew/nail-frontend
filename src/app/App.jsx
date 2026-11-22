@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getSessionUser } from "../shared/auth/session"
-import { Footer } from "../widgets/footer/Footer"
-import { Navbar } from "../widgets/navbar/Navbar"
+import { Footer } from "../widgets/Footer/Footer"
+import { Navbar } from "../widgets/Navbar/Navbar"
 import { getRoute } from "./routes"
 import "./styles/index.css"
 

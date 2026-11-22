@@ -104,9 +104,9 @@ export function Navbar({ role = "visitor", userName = "" }) {
           <a
             className={styles.logo}
             href={isAdmin ? "/admin" : "/"}
-            aria-label="Nail Design - página inicial"
+            aria-label="Nicole Nails - página inicial"
           >
-            <img src={logo} alt="Nail Design" />
+            <img src={logo} alt="Nicole Nails" />
           </a>
 
           <div className={styles.actions}>

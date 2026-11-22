@@ -21,7 +21,7 @@ export function MarketingFooter({
   brandHref = "/",
   tagline = "Cuidado que se vê. Beleza que se sente.",
   navigationGroups = defaultNavigationGroups,
-  legalLabel = "Nail Design | Agendamentos",
+  legalLabel = "Nicole Nails | Agendamentos",
   notice = "Protótipo interativo · Dados demonstrativos",
 }) {
   return (
@@ -29,7 +29,7 @@ export function MarketingFooter({
       <div className={styles.content}>
         <div className={styles.footerMain}>
           <div className={styles.footerBrand}>
-            <a className={styles.footerLogo} href={brandHref}>nail design.</a>
+            <a className={styles.footerLogo} href={brandHref}>nicole nails.</a>
             <p>{tagline}</p>
           </div>
           <nav className={styles.footerNavigation} aria-label="Links do rodapé">
@@ -43,7 +43,9 @@ export function MarketingFooter({
             ))}
           </nav>
         </div>
-        <div className={styles.footerLegal}>
+      </div>
+      <div className={styles.footerLegal}>
+        <div className={styles.footerLegalContent}>
           <span>{legalLabel}</span>
           <span>{notice}</span>
         </div>

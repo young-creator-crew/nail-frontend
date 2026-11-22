@@ -28,8 +28,12 @@ export function getRoute(pathname) {
   }
   if (path === "/servicos") return { Page: ServicesPage, role: "visitor" }
   if (path === "/agendamento") return { Page: AppointmentPage, role: "client" }
-  if (path === "/cadastro") return { Page: Cadastro, role: "visitor" }
-  if (path === "/entrar") return { Page: Login, role: "visitor" }
+  if (path === "/cadastro") {
+    return { Page: Cadastro, role: "visitor", shell: "standalone" }
+  }
+  if (path === "/entrar") {
+    return { Page: Login, role: "visitor", shell: "standalone" }
+  }
   if (path === "/perfil") return { Page: Perfil, role: "client" }
   if (path === "/admin") return { Page: AdminAgenda, role: "admin" }
   if (path === "/admin/dashboard") return { Page: AdminDashboard, role: "admin" }

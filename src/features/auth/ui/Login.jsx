@@ -2,10 +2,9 @@ import { useState } from "react"
 import { loginUser } from "../../../shared/api/services/authApi"
 import { setSessionUser } from "../../../shared/auth/session"
 import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
-import { ButtonBack } from "../../../shared/ui/button-back/ButtonBack"
-import { PasswordIcon } from "../../../shared/ui/icons/Icons"
 import { Input } from "../../../shared/ui/text-input/Input"
-import styles from "./Login.module.css"
+import { AuthPageLayout } from "./AuthPageLayout"
+import styles from "./AuthForm.module.css"
 
 export function Login() {
   const [formData, setFormData] = useState({
@@ -44,50 +43,75 @@ export function Login() {
   }
 
   return (
-    <main className={styles.page}>
-      <div className={styles.content}>
-        <ButtonBack href="/">Voltar</ButtonBack>
-
-        <section className={styles.intro} aria-labelledby="login-title">
-          <p className={styles.eyebrow}>BOM TER VOCÊ AQUI</p>
-          <h1 id="login-title">Entre na sua conta</h1>
-          <p className={styles.subtitle}>
-            Seu próximo momento de cuidado começa aqui.
-          </p>
-        </section>
+    <AuthPageLayout
+      formLabel="Acesso à conta"
+      imageAlt="Retrato de uma mulher em um momento de beleza e cuidado"
+      imageSrc="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=85"
+      visualEyebrow="BOM TER VOCÊ POR PERTO"
+      visualTitle={
+        <>
+          <span>Beleza que se vê.</span>
+          <em>Cuidado que se sente.</em>
+        </>
+      }
+    >
+      <section className={styles.formSection} aria-labelledby="login-title">
+        <p className={styles.eyebrow}>BOM TER VOCÊ AQUI</p>
+        <h1 id="login-title" className={styles.title}>Entre na sua conta</h1>
+        <p className={styles.subtitle}>
+          Seu próximo momento de cuidado começa aqui.
+        </p>
+        <p className={styles.careNote}>Seu próximo cuidado</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
-          <Input
-            autoComplete="username"
-            label="E-mail"
-            name="email"
-            onChange={updateField}
-            placeholder="seu@email.com"
-            required
-            value={formData.email}
-          />
-          <Input
-            autoComplete="current-password"
-            endAdornment={
-              <button
-                className={styles.passwordToggle}
-                type="button"
-                aria-label={isPasswordVisible ? "Ocultar senha" : "Mostrar senha"}
-                onClick={() => setIsPasswordVisible((current) => !current)}
-              >
-                <PasswordIcon isVisible={isPasswordVisible} />
-              </button>
-            }
-            label="Senha"
-            name="password"
-            onChange={updateField}
-            placeholder="Digite sua senha"
-            required
-            type={isPasswordVisible ? "text" : "password"}
-            value={formData.password}
-          />
+          <div className={styles.fieldGroup}>
+            <Input
+              autoComplete="email"
+              aria-describedby="login-email-help"
+              className={styles.input}
+              label="E-mail"
+              labelClassName={styles.label}
+              name="email"
+              onChange={updateField}
+              placeholder="seu@email.com"
+              required
+              type="email"
+              value={formData.email}
+            />
+            <p className={styles.helper} id="login-email-help">
+              Use o e-mail da sua conta.
+            </p>
+          </div>
+          <div className={styles.fieldGroup}>
+            <Input
+              autoComplete="current-password"
+              aria-describedby="login-password-help"
+              className={styles.input}
+              endAdornment={
+                <button
+                  className={styles.passwordToggle}
+                  type="button"
+                  aria-label={isPasswordVisible ? "Ocultar senha" : "Mostrar senha"}
+                  onClick={() => setIsPasswordVisible((current) => !current)}
+                >
+                  {isPasswordVisible ? "Ocultar" : "Mostrar"}
+                </button>
+              }
+              label="Senha"
+              labelClassName={styles.label}
+              name="password"
+              onChange={updateField}
+              placeholder="Digite sua senha"
+              required
+              type={isPasswordVisible ? "text" : "password"}
+              value={formData.password}
+            />
+            <p className={styles.helper} id="login-password-help">
+              Use a senha da sua conta.
+            </p>
+          </div>
 
-          <ButtonAction disabled={isSubmitting} icon="→" type="submit">
+          <ButtonAction className={styles.submit} disabled={isSubmitting} type="submit">
             {isSubmitting ? "Entrando..." : "Entrar"}
           </ButtonAction>
 
@@ -98,10 +122,11 @@ export function Login() {
           ) : null}
         </form>
 
-        <p className={styles.registerPrompt}>
-          Ainda não tem conta? <a href="/cadastro">Cadastre-se</a>
+        <p className={styles.accountPrompt}>
+          Ainda não tem conta?
+          <a href="/cadastro">Cadastre-se ↗</a>
         </p>
-      </div>
-    </main>
+      </section>
+    </AuthPageLayout>
   )
 }

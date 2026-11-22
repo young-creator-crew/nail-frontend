@@ -7,7 +7,7 @@ description: Create new React/Vite screens that match the repository's visual la
 
 Use this skill whenever adding or substantially changing a page, feature screen,
 administrative view, form, catalog, detail view, or reusable visual component.
-The goal is to extend the existing Nail Design interface without introducing a
+The goal is to extend the existing Nicole Nails interface without introducing a
 second visual system.
 
 ## Required workflow

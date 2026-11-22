@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import { AdminAgenda } from "../pages/admin-agenda/AdminAgenda"
 import { AdminDashboard } from "../pages/admin-dashboard/AdminDashboard"
 import { AddService } from "../pages/my-services/AddService"
+import { Cadastro } from "../pages/cadastro/Cadastro"
 import { EditService } from "../pages/my-services/EditService"
 import { MyServices } from "../pages/my-services/MyServices"
 import { Perfil } from "../pages/perfil/Perfil"
@@ -15,6 +16,7 @@ describe("application routes and personas", () => {
     ["/", Home, "visitor"],
     ["/servicos", ServicesPage, "visitor"],
     ["/entrar", Login, "visitor"],
+    ["/cadastro", Cadastro, "visitor"],
     ["/perfil", Perfil, "client"],
     ["/admin", AdminAgenda, "admin"],
     ["/admin/agenda", AdminAgenda, "admin"],
@@ -32,6 +34,10 @@ describe("application routes and personas", () => {
   it("uses a standalone shell for the home", () => {
     expect(getRoute("/").shell).toBe("standalone")
     expect(getRoute("/servicos").shell).toBeUndefined()
+  })
+
+  it.each(["/entrar", "/cadastro"])("uses the marketing shell on %s", (path) => {
+    expect(getRoute(path).shell).toBe("standalone")
   })
 
   it("keeps public and admin catalog routes separate", () => {

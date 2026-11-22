@@ -35,6 +35,7 @@
   gap: var(--space-4);
   margin-inline: auto;
   position: relative;
+  font-family: "Roboto", sans-serif;
 }
 
 .brand {

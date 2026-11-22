@@ -51,8 +51,8 @@ export function MarketingHeader({
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
       <div className={styles.content}>
-        <a className={styles.brand} href={brandHref} aria-label="Nail Design - página inicial">
-          nail design<span>.</span>
+        <a className={styles.brand} href={brandHref} aria-label="Nicole Nails - página inicial">
+          nicole nails<span>.</span>
         </a>
 
         <button

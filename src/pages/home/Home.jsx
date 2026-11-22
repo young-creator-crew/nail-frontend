@@ -121,6 +121,13 @@ export function Home() {
   const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
+    const targetId = window.location.hash.slice(1)
+    if (!targetId) return
+
+    document.getElementById(targetId)?.scrollIntoView()
+  }, [])
+
+  useEffect(() => {
     let isMounted = true
 
     getServices()

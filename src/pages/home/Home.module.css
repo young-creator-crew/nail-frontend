@@ -44,6 +44,13 @@
   padding-block: clamp(var(--space-3), 3.3vw, var(--space-8)) clamp(var(--space-7), 4vw, var(--space-10));
 }
 
+.services,
+.inspiration,
+.howItWorks,
+.faq {
+  scroll-margin-top: 96px;
+}
+
 .heroCopy {
   position: relative;
   z-index: 1;
