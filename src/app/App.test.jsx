@@ -13,6 +13,7 @@ import { getRoute } from "./routes"
 describe("application routes and personas", () => {
   it.each([
     ["/", Home, "visitor"],
+    ["/home-proposta", Home, "visitor"],
     ["/servicos", ServicesPage, "visitor"],
     ["/entrar", Login, "visitor"],
     ["/perfil", Perfil, "client"],
@@ -27,6 +28,12 @@ describe("application routes and personas", () => {
 
     expect(route.Page).toBe(Page)
     expect(route.role).toBe(role)
+  })
+
+  it("uses a standalone shell for the adopted home and its legacy proposal URL", () => {
+    expect(getRoute("/").shell).toBe("standalone")
+    expect(getRoute("/home-proposta").shell).toBe("standalone")
+    expect(getRoute("/servicos").shell).toBeUndefined()
   })
 
   it("keeps public and admin catalog routes separate", () => {
@@ -59,5 +66,6 @@ describe("application routes and personas", () => {
 
     expect(route.Page).toBe(Home)
     expect(route.role).toBe("visitor")
+    expect(route.shell).toBe("standalone")
   })
 })

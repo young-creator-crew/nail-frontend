@@ -23,7 +23,9 @@ function AdminPerfilPage() {
 export function getRoute(pathname) {
   const path = pathname.replace(/\/+$/, "") || "/"
 
-  if (path === "/") return { Page: Home, role: "visitor" }
+  if (path === "/" || path === "/home-proposta") {
+    return { Page: Home, role: "visitor", shell: "standalone" }
+  }
   if (path === "/servicos") return { Page: ServicesPage, role: "visitor" }
   if (path === "/agendamento") return { Page: AppointmentPage, role: "client" }
   if (path === "/cadastro") return { Page: Cadastro, role: "visitor" }
@@ -71,5 +73,5 @@ export function getRoute(pathname) {
     }
   }
 
-  return { Page: Home, role: "visitor" }
+  return { Page: Home, role: "visitor", shell: "standalone" }
 }

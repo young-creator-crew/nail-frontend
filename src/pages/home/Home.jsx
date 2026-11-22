@@ -1,19 +1,216 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { getServices } from "../../entities/service/api/serviceApi"
 import { getServiceImage } from "../../entities/service/model/mock-service-images"
+import { ArrowUpRightIcon } from "../../shared/ui/icons/Icons"
 import { ButtonAction } from "../../shared/ui/button-action/ButtonAction"
-import { ArrowUpRightIcon, CalendarIcon } from "../../shared/ui/icons/Icons"
-import { ServiceCard } from "../../entities/service/ui/ServiceCard"
 import styles from "./Home.module.css"
 
-const benefits = [
-  { icon: "✧", label: "Beleza nos detalhes" },
-  { icon: "▦", label: "Agende com praticidade" },
-  { icon: "✣", label: "Inspire-se em cada escolha" },
+const heroImage =
+  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=85"
+
+const galleryFallbacks = [
+  {
+    src: "https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=900&q=85",
+    alt: "Manicure clássica em tons suaves",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=900&q=85",
+    alt: "Unhas alongadas com decoração delicada",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1604902396830-aca29e19b067?auto=format&fit=crop&w=900&q=85",
+    alt: "Nail art colorida",
+  },
+]
+const detailImage =
+  "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=85"
+
+const faqItems = [
+  {
+    question: "Como escolho o serviço certo?",
+    answer: "Explore as fotos, compare as descrições e os detalhes de cada serviço para encontrar o que combina com você.",
+  },
+  {
+    question: "Posso ver os valores antes de entrar?",
+    answer: "Sim. Os serviços e valores disponíveis aparecem no catálogo. Alguns serviços podem ter opções e preços diferentes.",
+  },
+  {
+    question: "Preciso de uma conta para continuar?",
+    answer: "Você pode conhecer o catálogo sem entrar. O fluxo atual permite escolher uma data e um horário para o atendimento.",
+  },
 ]
 
-const heroImage =
-  "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1200&q=85"
+function getInitialTheme() {
+  const storedTheme = window.localStorage.getItem("theme")
+
+  if (storedTheme === "light" || storedTheme === "dark") {
+    return storedTheme
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light"
+}
+
+function getStartingPrice(service) {
+  const prices = (Array.isArray(service?.options) ? service.options : [])
+    .map((option) => Number(option?.price))
+    .filter((price) => Number.isFinite(price) && price >= 0)
+
+  if (prices.length === 0) {
+    return "Consulte detalhes"
+  }
+
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(Math.min(...prices))
+}
+
+function FlowerDecoration({ className }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 100 100"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g fill="currentColor">
+        {Array.from({ length: 8 }, (_, index) => (
+          <ellipse
+            cx="50"
+            cy="23"
+            key={index}
+            rx="9"
+            ry="22"
+            transform={`rotate(${index * 45} 50 50)`}
+          />
+        ))}
+        <circle cx="50" cy="50" r="8" />
+      </g>
+    </svg>
+  )
+}
+
+function HomeHeader() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [theme, setTheme] = useState(getInitialTheme)
+
+  const closeMenu = () => setIsMenuOpen(false)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem("theme", theme)
+  }, [theme])
+
+  return (
+    <header className={styles.header}>
+      <a className={styles.brand} href="/" aria-label="Nail Design - página inicial">
+        nail design<span>.</span>
+      </a>
+
+      <button
+        className={styles.menuToggle}
+        type="button"
+        aria-expanded={isMenuOpen}
+        aria-controls="home-navigation"
+        aria-label={isMenuOpen ? "Fechar navegação" : "Abrir navegação"}
+        onClick={() => setIsMenuOpen((current) => !current)}
+      >
+        <span />
+        <span />
+      </button>
+
+      <nav
+        id="home-navigation"
+        className={`${styles.navigation} ${isMenuOpen ? styles.navigationOpen : ""}`}
+        aria-label="Navegação da página"
+      >
+        <a href="#services" onClick={closeMenu}>Serviços</a>
+        <a href="#inspiration" onClick={closeMenu}>Inspirações</a>
+        <a href="#how-it-works" onClick={closeMenu}>Como funciona</a>
+        <a href="#faq" onClick={closeMenu}>Dúvidas</a>
+      </nav>
+
+      <div className={styles.headerActions}>
+        <button
+          className={styles.themeToggle}
+          type="button"
+          aria-label={theme === "light" ? "Ativar tema escuro" : "Ativar tema claro"}
+          onClick={() => setTheme((current) => (current === "light" ? "dark" : "light"))}
+        >
+          <span aria-hidden="true">{theme === "light" ? "☾" : "☀"}</span>
+        </button>
+        <a className={styles.loginLink} href="/entrar">Entrar</a>
+        <ButtonAction className={styles.createAccount} href="/cadastro">
+          Criar conta
+        </ButtonAction>
+      </div>
+    </header>
+  )
+}
+
+function HomeFooter() {
+  return (
+    <footer className={styles.footer}>
+      <div className={styles.footerMain}>
+        <div className={styles.footerBrand}>
+          <a className={styles.footerLogo} href="/">nail design.</a>
+          <p>Cuidado que se vê. Beleza que se sente.</p>
+        </div>
+        <nav className={styles.footerNavigation} aria-label="Links do rodapé">
+          <div>
+            <h2>Explore</h2>
+            <a href="/servicos">Serviços</a>
+            <a href="#inspiration">Inspirações</a>
+          </div>
+          <div>
+            <h2>Sua conta</h2>
+            <a href="/entrar">Entrar</a>
+            <a href="/cadastro">Cadastre-se</a>
+          </div>
+        </nav>
+      </div>
+      <div className={styles.footerLegal}>
+        <span>Nail Design | Agendamentos</span>
+        <span>Protótipo interativo · Dados demonstrativos</span>
+      </div>
+    </footer>
+  )
+}
+
+function HomeServiceCard({ service }) {
+  const image = getServiceImage(service)
+
+  return (
+    <a
+      className={styles.serviceCard}
+      href={`/servicos/${service.idNailService}`}
+      aria-label={`${service.serviceName || "Serviço de beleza"}: ver detalhes`}
+    >
+      <div className={styles.serviceImageWrap}>
+        {image ? (
+          <img
+            className={styles.serviceImage}
+            src={image}
+            alt={service.serviceName || "Inspiração de unhas"}
+            loading="lazy"
+          />
+        ) : (
+          <div className={styles.serviceImagePlaceholder} aria-hidden="true" />
+        )}
+      </div>
+      <div className={styles.serviceCardContent}>
+        <h3>{service.serviceName || "Serviço de beleza"}</h3>
+        <p>{service.serviceDescription || "Conheça os detalhes deste serviço."}</p>
+        <strong>{getStartingPrice(service)}</strong>
+        <span className={styles.serviceDetails}>
+          Ver detalhes <ArrowUpRightIcon />
+        </span>
+      </div>
+    </a>
+  )
+}
 
 export function Home() {
   const [services, setServices] = useState([])
@@ -53,120 +250,218 @@ export function Home() {
     }
   }, [])
 
+  const galleryImages = useMemo(() => {
+    const servicesWithImages = services
+      .map((service) => ({
+        src: getServiceImage(service),
+        alt: service.serviceName || "Inspiração de unhas",
+      }))
+      .filter((image) => image.src)
+
+    return galleryFallbacks.map((fallback, index) => (
+      servicesWithImages[index] ?? fallback
+    ))
+  }, [services])
+
   return (
-    <main>
-      <section className={styles.hero} aria-labelledby="hero-title">
-        <div className={styles.heroContent}>
+    <div className={styles.page}>
+      <HomeHeader />
+
+      <main>
+        <section className={styles.hero} aria-labelledby="home-title">
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>
-              <span aria-hidden="true" />
-              SEU PRÓXIMO MOMENTO DE CUIDADO
-            </p>
-            <h1 id="hero-title">
-              Pequenos detalhes.
+            <p className={styles.eyebrow}>NAIL ART &amp; AUTOEXPRESSÃO</p>
+            <h1 id="home-title" className={styles.heroTitle}>
+              Pequenos
               <br />
-              Uma beleza
-              <br />
-              <em>inteiramente sua.</em>
+              detalhes.
+              <em>Uma beleza</em>
+              <span>inteiramente sua.</span>
             </h1>
             <p className={styles.heroDescription}>
               Inspire-se, escolha seu serviço e encontre um horário para você.
             </p>
-            <ButtonAction href="/servicos">Explorar serviços</ButtonAction>
-            <p className={styles.bookingNote}>
-              <CalendarIcon />
-              Seu horário, sem complicação.
+            <div className={styles.heroActions}>
+              <ButtonAction className={styles.heroButton} href="/servicos">
+                Explorar serviços
+              </ButtonAction>
+              <a className={styles.textLink} href="#inspiration">
+                Conheça nosso universo <span aria-hidden="true">↓</span>
+              </a>
+            </div>
+            <p className={styles.heroStatement}>
+              Cuidado que se vê. Beleza que se sente.
             </p>
           </div>
 
           <div className={styles.heroVisual}>
-            <img
-              className={styles.heroImage}
-              src={heroImage}
-              alt="Unhas decoradas com acabamento em nail art"
-            />
-            <span className={styles.visualCaption}>FEITO PARA VOCÊ</span>
-            <span className={styles.visualCount}>01 / 04</span>
-            <span className={styles.visualVertical}>ARTE, CUIDADO &amp; PERSONALIDADE</span>
-            <div className={styles.visualBadge}>
-              <span aria-hidden="true">✣</span>
-              <span>
-                Mais que unhas.
-                <strong>Um jeito de se expressar.</strong>
-              </span>
-            </div>
-            <span className={styles.visualBurst} aria-hidden="true">✱</span>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.benefits} aria-label="Benefícios">
-        <div className={styles.benefitList}>
-          {benefits.map((benefit) => (
-            <div className={styles.benefit} key={benefit.label}>
-              <span className={styles.benefitIcon} aria-hidden="true">{benefit.icon}</span>
-              <span>{benefit.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.services} aria-labelledby="services-title">
-        <div className={styles.sectionHeader}>
-          <div>
-            <p className={styles.eyebrow}>ENCONTRE O SEU ESTILO</p>
-            <h2 id="services-title">Serviços e inspirações</h2>
-          </div>
-          <a className={styles.sectionLink} href="/servicos">
-            Ver todos os serviços <ArrowUpRightIcon />
-          </a>
-        </div>
-        {isLoading && (
-          <p className={styles.status} role="status">Carregando serviços...</p>
-        )}
-        {!isLoading && errorMessage && (
-          <p className={styles.statusError} role="alert">{errorMessage}</p>
-        )}
-        {!isLoading && !errorMessage && services.length === 0 && (
-          <p className={styles.status} role="status">
-            Nenhum serviço disponível no momento.
-          </p>
-        )}
-        {!isLoading && !errorMessage && services.length > 0 && (
-          <div className={styles.cardGrid}>
-            {services.slice(0, 4).map((service) => (
-              <ServiceCard
-                key={service.idNailService}
-                description={service.serviceDescription}
-                href={`/servicos/${service.idNailService}`}
-                image={getServiceImage(service)}
-                imageAlt={service.serviceName}
-                name={service.serviceName}
+            <div className={styles.heroImageFrame}>
+              <img
+                src={heroImage}
+                alt="Retrato de uma mulher em um momento de cuidado e beleza"
+                fetchPriority="high"
               />
+            </div>
+            <a className={styles.heroBadge} href="/agendamento">
+              <ArrowUpRightIcon />
+              <span>Seu próximo<br />momento</span>
+            </a>
+            <p className={styles.heroCaption}>A beleza de ser você</p>
+          </div>
+        </section>
+
+        <section className={styles.intro} aria-labelledby="intro-title">
+          <div className={styles.introLabels} aria-hidden="true">
+            <span>Arte nas unhas</span>
+            <span>Cuidado nos detalhes</span>
+            <span>Do seu jeito</span>
+          </div>
+          <div className={styles.introContent}>
+            <img
+              className={styles.introImage}
+              src={galleryFallbacks[0].src}
+              alt="Mãos com manicure em tons suaves"
+              loading="lazy"
+            />
+            <div className={styles.introCopy}>
+              <p className={styles.eyebrow}>MAIS QUE UNHAS</p>
+              <h2 id="intro-title">Um jeito de <em>se expressar.</em></h2>
+              <p>
+                Um espaço para conhecer os serviços, ver trabalhos realizados
+                e agendar com mais praticidade.
+              </p>
+            </div>
+            <div className={styles.introList}>
+              <p className={styles.eyebrow}>Beleza com intenção, personalidade em cada escolha.</p>
+              <ul>
+                <li><strong>Nail Art</strong><span>Cor e personalidade</span></li>
+                <li><strong>Manicure</strong><span>Cuidado essencial</span></li>
+                <li><strong>Alongamento</strong><span>Comprimento e delicadeza</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="services" className={styles.services} aria-labelledby="services-title">
+          <FlowerDecoration className={styles.serviceFlower} />
+          <div className={styles.servicesPanel}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <h2 id="services-title">Seu estilo.<br /><em>sua próxima escolha.</em></h2>
+              </div>
+              <div className={styles.servicesIntro}>
+                <p>Da delicadeza do clássico à liberdade de criar. Escolha um serviço e descubra os detalhes.</p>
+                <a className={styles.textLink} href="/servicos">
+                  Ver todos os serviços <ArrowUpRightIcon />
+                </a>
+              </div>
+            </div>
+
+            {isLoading && <p className={styles.status} role="status">Carregando serviços...</p>}
+            {!isLoading && errorMessage && (
+              <p className={styles.statusError} role="alert">
+                Não foi possível carregar os serviços: {errorMessage}
+              </p>
+            )}
+            {!isLoading && !errorMessage && services.length === 0 && (
+              <p className={styles.status} role="status">Nenhum serviço disponível no momento.</p>
+            )}
+            {!isLoading && !errorMessage && services.length > 0 && (
+              <div className={styles.serviceGrid}>
+                {services.slice(0, 4).map((service) => (
+                  <HomeServiceCard
+                    key={service.idNailService}
+                    service={service}
+                  />
+                ))}
+              </div>
+            )}
+            <p className={styles.panelNote}>
+              Os valores seguem as opções cadastradas. Serviços sem foto usam uma imagem de referência.
+            </p>
+          </div>
+        </section>
+
+        <section id="inspiration" className={styles.inspiration} aria-labelledby="inspiration-title">
+          <div className={styles.inspirationHeading}>
+            <div>
+              <h2 id="inspiration-title">Salve na sua <em>inspiração.</em></h2>
+            </div>
+            <div className={styles.inspirationCta}>
+              <p>Texturas, cores e possibilidades. Uma seleção para descobrir o que é a sua cara.</p>
+              <ButtonAction className={styles.inspirationButton} href="/servicos">
+                Encontre seu estilo
+              </ButtonAction>
+            </div>
+          </div>
+          <div className={styles.gallery}>
+            {galleryImages.map((image, index) => (
+              <figure
+                className={`${styles.galleryItem} ${styles[`galleryItem${index + 1}`]}`}
+                key={`${image.src}-${index}`}
+              >
+                <img src={image.src} alt={image.alt} loading="lazy" />
+                <figcaption>{`0${index + 1} / ${["Contraste & personalidade", "Delicadeza que alonga", "Cor para sair do comum"][index]}`}</figcaption>
+              </figure>
             ))}
           </div>
-        )}
-      </section>
+        </section>
 
-      <section className={styles.about} aria-labelledby="about-title">
-        <div>
-          <p className={styles.eyebrow}>UM ESPAÇO PARA VOCÊ</p>
-          <h2 id="about-title">
-            Seu cuidado começa
-            <br />
-            com uma escolha.
-          </h2>
-        </div>
-        <div className={styles.aboutCopy}>
-          <p>
-            Um espaço para conhecer os serviços, ver trabalhos realizados e
-            agendar com mais praticidade.
-          </p>
-          <a className={styles.sectionLink} href="/servicos">
-            Encontre seu próximo horário <ArrowUpRightIcon />
-          </a>
-        </div>
-      </section>
-    </main>
+        <section id="how-it-works" className={styles.howItWorks} aria-label="Como funciona">
+          <ol className={styles.steps}>
+            <li>
+              <span>01</span>
+              <div><h3>Encontre sua inspiração</h3><p>Explore os trabalhos e descubra o que combina com você.</p></div>
+            </li>
+            <li>
+              <span>02</span>
+              <div><h3>Escolha seu serviço</h3><p>Veja as opções, os detalhes e os valores.</p></div>
+            </li>
+            <li>
+              <span>03</span>
+              <div><h3>Reserve um tempo para você</h3><p>Escolha uma data e um horário no fluxo de agendamento.</p></div>
+            </li>
+          </ol>
+        </section>
+
+        <section id="faq" className={styles.faq} aria-labelledby="faq-title">
+          <div className={styles.faqIntro}>
+            <h2 id="faq-title">Vamos tirar<br /><em>suas dúvidas?</em></h2>
+            <p>Mais clareza para fazer a sua próxima escolha.</p>
+          </div>
+          <div className={styles.faqList}>
+            {faqItems.map((item, index) => (
+              <details className={styles.faqItem} key={item.question} open={index === 0}>
+                <summary>
+                  {item.question}
+                  <span aria-hidden="true" />
+                </summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.finalCta} aria-labelledby="final-cta-title">
+          <FlowerDecoration className={styles.finalFlower} />
+          <div className={styles.finalImageFrame}>
+            <img
+              src={detailImage}
+              alt="Frasco de beleza em uma composição de cuidado pessoal"
+              loading="lazy"
+            />
+          </div>
+          <div className={styles.finalCtaCopy}>
+            <p className={styles.eyebrow}>SEU PRÓXIMO MOMENTO</p>
+            <h2 id="final-cta-title">Um tempo<br />só seu.<br /><em>Começa aqui.</em></h2>
+            <ButtonAction className={styles.finalCtaButton} href="/agendamento">
+              Encontre seu próximo horário
+            </ButtonAction>
+          </div>
+        </section>
+      </main>
+
+      <HomeFooter />
+    </div>
   )
 }

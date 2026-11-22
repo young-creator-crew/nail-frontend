@@ -6,7 +6,7 @@ import { getRoute } from "./routes"
 import "./styles/index.css"
 
 function App() {
-  const { Page, role } = getRoute(window.location.pathname)
+  const { Page, role, shell } = getRoute(window.location.pathname)
   const [sessionUser, setSessionUser] = useState(getSessionUser)
 
   useEffect(() => {
@@ -28,12 +28,15 @@ function App() {
   const isAuthRoute = window.location.pathname === "/entrar"
     || window.location.pathname === "/cadastro"
   const effectiveRole = isAuthRoute ? role : sessionUser ? sessionRole : role
+  const usesGlobalShell = shell !== "standalone"
 
   return (
     <>
-      <Navbar role={effectiveRole} userName={sessionUser?.name ?? ""} />
+      {usesGlobalShell && (
+        <Navbar role={effectiveRole} userName={sessionUser?.name ?? ""} />
+      )}
       <Page />
-      <Footer />
+      {usesGlobalShell && <Footer />}
     </>
   )
 }

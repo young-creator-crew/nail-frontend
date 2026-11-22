@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import Chart from "chart.js/auto"
+import { Chart, registerables } from "chart.js"
 import { getAdminDashboard } from "../../../entities/dashboard/api/dashboardApi"
 import { getDemoDashboard } from "../../../entities/dashboard/model/demo-dashboard"
 import {
@@ -10,6 +10,8 @@ import {
   WalletIcon,
 } from "../../../shared/ui/icons/Icons"
 import styles from "./AdminDashboard.module.css"
+
+Chart.register(...registerables)
 
 function formatDateToApi(date) {
   return date.toISOString().slice(0, 10)
