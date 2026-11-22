@@ -3,6 +3,8 @@ import { getServices } from "../../entities/service/api/serviceApi"
 import { getServiceImage } from "../../entities/service/model/mock-service-images"
 import { ArrowUpRightIcon } from "../../shared/ui/icons/Icons"
 import { ButtonAction } from "../../shared/ui/button-action/ButtonAction"
+import { MarketingFooter } from "../../widgets/marketing-footer/MarketingFooter"
+import { MarketingHeader } from "../../widgets/marketing-header/MarketingHeader"
 import styles from "./Home.module.css"
 
 const heroImage =
@@ -39,18 +41,6 @@ const faqItems = [
     answer: "Você pode conhecer o catálogo sem entrar. O fluxo atual permite escolher uma data e um horário para o atendimento.",
   },
 ]
-
-function getInitialTheme() {
-  const storedTheme = window.localStorage.getItem("theme")
-
-  if (storedTheme === "light" || storedTheme === "dark") {
-    return storedTheme
-  }
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light"
-}
 
 function getStartingPrice(service) {
   const prices = (Array.isArray(service?.options) ? service.options : [])
@@ -89,93 +79,6 @@ function FlowerDecoration({ className }) {
         <circle cx="50" cy="50" r="8" />
       </g>
     </svg>
-  )
-}
-
-function HomeHeader() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [theme, setTheme] = useState(getInitialTheme)
-
-  const closeMenu = () => setIsMenuOpen(false)
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme
-    window.localStorage.setItem("theme", theme)
-  }, [theme])
-
-  return (
-    <header className={styles.header}>
-      <a className={styles.brand} href="/" aria-label="Nail Design - página inicial">
-        nail design<span>.</span>
-      </a>
-
-      <button
-        className={styles.menuToggle}
-        type="button"
-        aria-expanded={isMenuOpen}
-        aria-controls="home-navigation"
-        aria-label={isMenuOpen ? "Fechar navegação" : "Abrir navegação"}
-        onClick={() => setIsMenuOpen((current) => !current)}
-      >
-        <span />
-        <span />
-      </button>
-
-      <nav
-        id="home-navigation"
-        className={`${styles.navigation} ${isMenuOpen ? styles.navigationOpen : ""}`}
-        aria-label="Navegação da página"
-      >
-        <a href="#services" onClick={closeMenu}>Serviços</a>
-        <a href="#inspiration" onClick={closeMenu}>Inspirações</a>
-        <a href="#how-it-works" onClick={closeMenu}>Como funciona</a>
-        <a href="#faq" onClick={closeMenu}>Dúvidas</a>
-      </nav>
-
-      <div className={styles.headerActions}>
-        <button
-          className={styles.themeToggle}
-          type="button"
-          aria-label={theme === "light" ? "Ativar tema escuro" : "Ativar tema claro"}
-          onClick={() => setTheme((current) => (current === "light" ? "dark" : "light"))}
-        >
-          <span aria-hidden="true">{theme === "light" ? "☾" : "☀"}</span>
-        </button>
-        <a className={styles.loginLink} href="/entrar">Entrar</a>
-        <ButtonAction className={styles.createAccount} href="/cadastro">
-          Criar conta
-        </ButtonAction>
-      </div>
-    </header>
-  )
-}
-
-function HomeFooter() {
-  return (
-    <footer className={styles.footer}>
-      <div className={styles.footerMain}>
-        <div className={styles.footerBrand}>
-          <a className={styles.footerLogo} href="/">nail design.</a>
-          <p>Cuidado que se vê. Beleza que se sente.</p>
-        </div>
-        <nav className={styles.footerNavigation} aria-label="Links do rodapé">
-          <div>
-            <h2>Explore</h2>
-            <a href="/servicos">Serviços</a>
-            <a href="#inspiration">Inspirações</a>
-          </div>
-          <div>
-            <h2>Sua conta</h2>
-            <a href="/entrar">Entrar</a>
-            <a href="/cadastro">Cadastre-se</a>
-          </div>
-        </nav>
-      </div>
-      <div className={styles.footerLegal}>
-        <span>Nail Design | Agendamentos</span>
-        <span>Protótipo interativo · Dados demonstrativos</span>
-      </div>
-    </footer>
   )
 }
 
@@ -265,7 +168,7 @@ export function Home() {
 
   return (
     <div className={styles.page}>
-      <HomeHeader />
+      <MarketingHeader />
 
       <main>
         <section className={styles.hero} aria-labelledby="home-title">
@@ -461,7 +364,7 @@ export function Home() {
         </section>
       </main>
 
-      <HomeFooter />
+      <MarketingFooter />
     </div>
   )
 }

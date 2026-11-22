@@ -13,7 +13,6 @@ import { getRoute } from "./routes"
 describe("application routes and personas", () => {
   it.each([
     ["/", Home, "visitor"],
-    ["/home-proposta", Home, "visitor"],
     ["/servicos", ServicesPage, "visitor"],
     ["/entrar", Login, "visitor"],
     ["/perfil", Perfil, "client"],
@@ -30,9 +29,8 @@ describe("application routes and personas", () => {
     expect(route.role).toBe(role)
   })
 
-  it("uses a standalone shell for the adopted home and its legacy proposal URL", () => {
+  it("uses a standalone shell for the home", () => {
     expect(getRoute("/").shell).toBe("standalone")
-    expect(getRoute("/home-proposta").shell).toBe("standalone")
     expect(getRoute("/servicos").shell).toBeUndefined()
   })
 

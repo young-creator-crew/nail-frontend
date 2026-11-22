@@ -23,7 +23,7 @@ function AdminPerfilPage() {
 export function getRoute(pathname) {
   const path = pathname.replace(/\/+$/, "") || "/"
 
-  if (path === "/" || path === "/home-proposta") {
+  if (path === "/") {
     return { Page: Home, role: "visitor", shell: "standalone" }
   }
   if (path === "/servicos") return { Page: ServicesPage, role: "visitor" }
