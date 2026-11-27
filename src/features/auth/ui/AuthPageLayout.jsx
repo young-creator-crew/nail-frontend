@@ -4,7 +4,6 @@ import { MarketingHeader } from "../../../widgets/marketing-header/MarketingHead
 import styles from "./AuthPageLayout.module.css"
 
 const navigationLinks = [
-  { label: "Início", href: "/" },
   { label: "Serviços", href: "/#services" },
   { label: "Inspirações", href: "/#inspiration" },
   { label: "Como funciona", href: "/#how-it-works" },

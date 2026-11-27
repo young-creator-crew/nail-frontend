@@ -221,11 +221,6 @@ export function Home() {
         </section>
 
         <section className={styles.intro} aria-labelledby="intro-title">
-          <div className={styles.introLabels} aria-hidden="true">
-            <span>Arte nas unhas</span>
-            <span>Cuidado nos detalhes</span>
-            <span>Do seu jeito</span>
-          </div>
           <div className={styles.introContent}>
             <img
               className={styles.introImage}
@@ -261,9 +256,9 @@ export function Home() {
               </div>
               <div className={styles.servicesIntro}>
                 <p>Da delicadeza do clássico à liberdade de criar. Escolha um serviço e descubra os detalhes.</p>
-                <a className={styles.textLink} href="/servicos">
-                  Ver todos os serviços <ArrowUpRightIcon />
-                </a>
+                <ButtonAction className={styles.servicesButton} href="/servicos">
+                  Ver todos os serviços
+                </ButtonAction>
               </div>
             </div>
 

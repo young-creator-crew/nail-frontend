@@ -41,7 +41,7 @@
   grid-template-columns: minmax(0, 0.94fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(var(--space-4), 5.5vw, var(--space-12));
-  padding-block: clamp(var(--space-3), 3.3vw, var(--space-8)) clamp(var(--space-7), 4vw, var(--space-10));
+  padding-block: clamp(var(--space-2), 2vw, var(--space-4)) var(--space-2);
 }
 
 .services,
@@ -128,6 +128,7 @@
   min-height: clamp(var(--space-6), 3.4vw, var(--space-8));
   gap: clamp(var(--space-3), 2vw, var(--space-5));
   padding-inline: clamp(var(--space-3), 3vw, 56px);
+  border-radius: 999px;
   font-size: clamp(14px, 0.9vw, 18px);
 }
 
@@ -154,7 +155,7 @@
 }
 
 .heroStatement {
-  margin-top: clamp(var(--space-5), 4.3vw, var(--space-10));
+  margin-top: clamp(var(--space-4), 2.35vw, var(--space-6));
   color: var(--color-action-primary);
   font-size: clamp(14px, 0.8vw, 16px);
   font-weight: 700;
@@ -164,8 +165,8 @@
 
 .heroVisual {
   position: relative;
-  width: min(100%, 760px);
-  aspect-ratio: 0.95;
+  width: min(100%, 680px);
+  aspect-ratio: 1.02;
   justify-self: end;
   isolation: isolate;
 }
@@ -258,21 +259,7 @@
 
 .intro {
   position: relative;
-  padding-block: 0 clamp(var(--space-10), 5.4vw, 104px);
-}
-
-.introLabels {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(150px, 0.72fr) minmax(220px, 1.5fr) minmax(180px, 0.8fr);
-  gap: clamp(var(--space-3), 3.5vw, var(--space-6));
-  margin-bottom: var(--space-4);
-  color: var(--color-action-primary);
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-  text-transform: uppercase;
+  padding-block: clamp(var(--space-5), calc(3vw + var(--space-2)), var(--space-6)) var(--space-8);
 }
 
 .introContent {
@@ -282,12 +269,6 @@
   grid-template-columns: minmax(150px, 0.72fr) minmax(220px, 1.5fr) minmax(180px, 0.8fr);
   align-items: center;
   gap: clamp(var(--space-3), 3.5vw, var(--space-6));
-}
-
-@media (min-width: 1024px) {
-  .introContent {
-    transform: translateY(var(--space-4));
-  }
 }
 
 .introImage {
@@ -437,8 +418,11 @@
 }
 
 .servicesIntro {
+  display: flex;
+  flex-direction: column;
   max-width: 448px;
   flex: 0 1 384px;
+  align-items: flex-end;
   padding-bottom: var(--space-1);
 }
 
@@ -448,6 +432,22 @@
   color: var(--color-text-secondary);
   font-size: clamp(16px, 1vw, 18px);
   line-height: 1.6;
+}
+
+.servicesIntro p {
+  width: 100%;
+}
+
+.servicesButton {
+  border-radius: 999px;
+  background: #fcd74d;
+  color: #141414;
+  font-size: 14px;
+}
+
+.servicesButton:hover:not(:disabled) {
+  background: #ffe578;
+  color: #141414;
 }
 
 .serviceGrid {
@@ -589,10 +589,14 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 1fr minmax(220px, 0.55fr);
+  grid-template-columns: 0.92fr 1fr 0.92fr;
   align-items: end;
-  gap: var(--space-4);
+  gap: clamp(var(--space-3), 3vw, var(--space-5));
   margin-bottom: var(--space-4);
+}
+
+.inspirationHeading > div:first-child {
+  grid-column: 1 / 3;
 }
 
 .inspiration h2 {
@@ -605,12 +609,14 @@
 }
 
 .inspirationCta {
-  max-width: 520px;
-  justify-self: end;
+  grid-column: 3;
+  width: 100%;
+  max-width: none;
+  justify-self: stretch;
 }
 
 .inspirationButton {
-  width: min(100%, 320px);
+  width: 100%;
   min-height: 48px;
   justify-content: space-between;
   border-radius: 999px;
@@ -841,7 +847,6 @@
 
 .finalCtaButton {
   margin-top: var(--space-3);
-  border-radius: 999px;
 }
 
 .finalImageFrame {
@@ -875,8 +880,12 @@
     padding-block: 0 var(--space-4);
   }
 
+  .intro {
+    padding-block: clamp(var(--space-4), 3vw, var(--space-6)) var(--space-8);
+  }
+
   .heroVisual {
-    min-height: clamp(320px, 36vw, 384px);
+    min-height: clamp(300px, 34vw, 360px);
   }
 }
 
@@ -934,7 +943,7 @@
   }
 
   .heroVisual {
-    min-height: min(104vw, 432px);
+    min-height: min(96vw, 400px);
     margin-inline: var(--space-1) var(--space-2);
   }
 
@@ -950,20 +959,13 @@
   }
 
   .intro {
-    padding-bottom: var(--space-6);
+    padding-block: calc(var(--space-6) - var(--space-3)) var(--space-10);
   }
 
   .heroCaption {
     right: 0;
     left: 8%;
     width: 92%;
-  }
-
-  .introLabels {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-1);
-    margin-bottom: var(--space-3);
-    font-size: 10px;
   }
 
   .introContent {
@@ -1046,10 +1048,6 @@
     max-width: 100%;
   }
 
-  .servicesIntro p {
-    max-width: 290px;
-  }
-
   .serviceGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-2);
@@ -1087,6 +1085,11 @@
     grid-template-columns: 1fr;
     gap: var(--space-2);
     margin-bottom: var(--space-3);
+  }
+
+  .inspirationHeading > div:first-child,
+  .inspirationCta {
+    grid-column: 1;
   }
 
   .inspiration h2 {
@@ -1238,10 +1241,6 @@
 
   .heroTitle {
     font-size: 56px;
-  }
-
-  .introLabels {
-    font-size: 10px;
   }
 
   .introContent {
