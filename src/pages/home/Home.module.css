@@ -29,8 +29,7 @@
 .services,
 .inspiration,
 .howItWorks,
-.faq,
-.finalCta {
+.faq {
   width: min(calc(100% - var(--space-4)), 1760px);
   margin-inline: auto;
 }
@@ -76,8 +75,8 @@
   color: var(--color-action-primary);
   font-family: var(--font-body);
   font-size: clamp(64px, 7vw, 144px);
-  font-weight: 700;
-  letter-spacing: -0.085em;
+  font-weight: 900;
+  letter-spacing: -0.015em;
   line-height: 0.88;
   text-transform: uppercase;
 }
@@ -123,8 +122,7 @@
   margin-top: clamp(var(--space-4), 2.35vw, var(--space-6));
 }
 
-.heroButton,
-.finalCtaButton {
+.heroButton {
   min-height: clamp(var(--space-6), 3.4vw, var(--space-8));
   gap: clamp(var(--space-3), 2vw, var(--space-5));
   padding-inline: clamp(var(--space-3), 3vw, 56px);
@@ -200,8 +198,7 @@
   pointer-events: none;
 }
 
-.heroImageFrame img,
-.finalImageFrame img {
+.heroImageFrame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -287,8 +284,7 @@
 .introCopy h2,
 .sectionHeader h2,
 .inspiration h2,
-.faqIntro h2,
-.finalCta h2 {
+.faqIntro h2 {
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(var(--space-4), 3.6vw, 64px);
@@ -300,8 +296,7 @@
 .introCopy h2 em,
 .sectionHeader h2 em,
 .inspiration h2 em,
-.faqIntro h2 em,
-.finalCta h2 em {
+.faqIntro h2 em {
   color: var(--color-action-primary);
   font-style: italic;
 }
@@ -795,83 +790,6 @@
   line-height: 1.6;
 }
 
-.finalCta {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  width: min(calc(100% - var(--space-4)), 1760px);
-  min-height: 0;
-  grid-template-columns: 0.86fr 1fr;
-  align-items: start;
-  gap: var(--space-5);
-  padding-block: clamp(var(--space-5), 3.2vw, var(--space-8)) clamp(var(--space-8), 6vw, 112px);
-}
-
-.finalCta h2 {
-  color: var(--color-action-primary);
-  font-family: var(--font-body);
-  font-size: clamp(56px, 6.5vw, 128px);
-  font-weight: 700;
-  letter-spacing: -0.08em;
-  line-height: 0.9;
-  text-transform: uppercase;
-}
-
-.finalCta h2 em {
-  display: block;
-  margin-top: var(--space-1);
-  font-family: var(--font-display);
-  font-size: 0.48em;
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  line-height: 1.2;
-  text-transform: none;
-}
-
-.finalCtaCopy {
-  max-width: min(100%, 720px);
-  justify-self: end;
-  text-align: right;
-}
-
-.finalFlower {
-  position: absolute;
-  z-index: 1;
-  right: 51%;
-  bottom: 28%;
-  width: clamp(var(--space-10), 10vw, 128px);
-  color: var(--color-decoration);
-  pointer-events: none;
-  transform: rotate(12deg);
-}
-
-.finalCtaButton {
-  margin-top: var(--space-3);
-}
-
-.finalImageFrame {
-  position: relative;
-  z-index: 0;
-  width: min(100%, 600px);
-  aspect-ratio: 1.04;
-  justify-self: start;
-}
-
-.finalImageFrame::before {
-  position: absolute;
-  right: -10%;
-  bottom: -12%;
-  z-index: -1;
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--color-accent);
-  content: "";
-}
-
-.finalImageFrame img {
-  border-radius: 42% 8% 42% 8% / 42% 8% 34% 8%;
-}
 
 @media (max-width: 1023px) {
   .hero {
@@ -895,8 +813,7 @@
   .services,
   .inspiration,
   .howItWorks,
-  .faq,
-  .finalCta {
+  .faq {
     width: min(calc(100% - var(--space-6)), 1200px);
     margin-inline: auto;
   }
@@ -1169,48 +1086,6 @@
     font-size: 16px;
   }
 
-  .finalCta {
-    min-height: 0;
-    grid-template-columns: 0.92fr 1fr;
-    align-items: end;
-    gap: var(--space-1);
-    padding-block: 0 var(--space-8);
-  }
-
-  .finalFlower {
-    right: 53%;
-    bottom: 20%;
-    width: var(--space-9);
-  }
-
-  .finalCta h2 {
-    font-size: clamp(48px, 11vw, 64px);
-  }
-
-  .finalCta .eyebrow {
-    font-size: 10px;
-  }
-
-  .finalCtaButton {
-    min-height: 40px;
-    gap: var(--space-1);
-    padding-inline: var(--space-2);
-    font-size: 14px;
-  }
-
-  .finalCtaButton span:last-child {
-    width: 14px;
-    flex-basis: 14px;
-    font-size: 14px;
-  }
-
-  .finalImageFrame {
-    width: 100%;
-    height: auto;
-    max-height: none;
-    aspect-ratio: 0.8;
-  }
-
 }
 
 @media (max-width: 380px) {
@@ -1219,8 +1094,7 @@
   .services,
   .inspiration,
   .howItWorks,
-  .faq,
-  .finalCta {
+  .faq {
     width: min(calc(100% - var(--space-4)), 1200px);
   }
 
@@ -1281,12 +1155,6 @@
     top: calc(0px - var(--space-3));
     right: calc(0px - var(--space-3));
     width: var(--space-8);
-  }
-
-  .finalFlower {
-    right: 53%;
-    bottom: 19%;
-    width: var(--space-7);
   }
 
 }

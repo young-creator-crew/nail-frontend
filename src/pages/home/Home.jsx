@@ -24,8 +24,6 @@ const galleryFallbacks = [
     alt: "Nail art colorida",
   },
 ]
-const detailImage =
-  "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=85"
 
 const faqItems = [
   {
@@ -347,23 +345,6 @@ export function Home() {
           </div>
         </section>
 
-        <section className={styles.finalCta} aria-labelledby="final-cta-title">
-          <FlowerDecoration className={styles.finalFlower} />
-          <div className={styles.finalImageFrame}>
-            <img
-              src={detailImage}
-              alt="Frasco de beleza em uma composição de cuidado pessoal"
-              loading="lazy"
-            />
-          </div>
-          <div className={styles.finalCtaCopy}>
-            <p className={styles.eyebrow}>SEU PRÓXIMO MOMENTO</p>
-            <h2 id="final-cta-title">Um tempo<br />só seu.<br /><em>Começa aqui.</em></h2>
-            <ButtonAction className={styles.finalCtaButton} href="/agendamento">
-              Encontre seu próximo horário
-            </ButtonAction>
-          </div>
-        </section>
       </main>
 
       <MarketingFooter />

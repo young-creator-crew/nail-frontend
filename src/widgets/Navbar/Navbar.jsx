@@ -3,6 +3,7 @@ import logo from "../../shared/assets/Logo.svg"
 import menuIcon from "../../shared/assets/Menu.svg"
 import profileIcon from "../../shared/assets/Perfil.svg"
 import { MobileSidebar } from "../mobile-sidebar/MobileSidebar"
+import { MoonIcon } from "../../shared/ui/icons/Icons"
 import styles from "./Navbar.module.css"
 
 const visitorLinks = [
@@ -116,7 +117,7 @@ export function Navbar({ role = "visitor", userName = "" }) {
               aria-label={theme === "light" ? "Ativar tema escuro" : "Ativar tema claro"}
               onClick={() => setTheme((current) => (current === "light" ? "dark" : "light"))}
             >
-              <span aria-hidden="true">{theme === "light" ? "☾" : "☀"}</span>
+              {theme === "light" ? <MoonIcon /> : <span aria-hidden="true">☀</span>}
             </button>
 
             <a className={styles.accountLink} href={accountHref}>

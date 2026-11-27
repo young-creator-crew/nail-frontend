@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from "react"
 import { ButtonAction } from "../../shared/ui/button-action/ButtonAction"
+import { MoonIcon } from "../../shared/ui/icons/Icons"
 import styles from "./MarketingHeader.module.css"
 
 const defaultNavigationLinks = [
@@ -86,7 +87,7 @@ export function MarketingHeader({
             aria-label={theme === "light" ? "Ativar tema escuro" : "Ativar tema claro"}
             onClick={() => setTheme((current) => (current === "light" ? "dark" : "light"))}
           >
-            <span aria-hidden="true">{theme === "light" ? "☾" : "☀"}</span>
+            {theme === "light" ? <MoonIcon /> : <span aria-hidden="true">☀</span>}
           </button>
           <a className={styles.loginLink} href={loginHref}>{loginLabel}</a>
           <ButtonAction className={styles.createAccount} href={actionHref}>
