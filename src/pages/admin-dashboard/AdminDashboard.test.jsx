@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest"
-import { getDemoDashboard } from "../../entities/dashboard/model/demo-dashboard"
 import { getDashboardMetrics, normalizeDashboardData } from "../../entities/dashboard/model/dashboard"
 
 const response = {
@@ -49,13 +48,4 @@ describe("admin dashboard", () => {
     expect(() => normalizeDashboardData({ ...response, cancelled: "invalido" })).toThrow("indicadores inválidos")
   })
 
-  it("generates a complete demo payload for the selected period", () => {
-    const data = normalizeDashboardData(getDemoDashboard({ endDate: "2026-10-24" }))
-
-    expect(data.daily).toHaveLength(15)
-    expect(data.daily[0].date.toISOString().slice(0, 10)).toBe("2026-10-10")
-    expect(data.daily.at(-1).date.toISOString().slice(0, 10)).toBe("2026-10-24")
-    expect(data.cancelled).toBe(6)
-    expect(data.averageTicket).toBe(75)
-  })
 })

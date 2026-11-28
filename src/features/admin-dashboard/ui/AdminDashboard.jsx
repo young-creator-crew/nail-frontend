@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Chart, registerables } from "chart.js"
 import { getAdminDashboard } from "../../../entities/dashboard/api/dashboardApi"
-import { getDemoDashboard } from "../../../entities/dashboard/model/demo-dashboard"
 import {
   ArrowUpRightIcon,
   CalendarIcon,
@@ -46,53 +45,59 @@ function getInitialPeriod() {
 }
 
 function normalizeDashboardResponse(response, period) {
-  const fallback = getDemoDashboard({ endDate: period.endDate })
   const rawDaily = Array.isArray(response?.appointmentsByDay)
     ? response.appointmentsByDay
     : Array.isArray(response?.daily)
       ? response.daily
-      : fallback.daily
+      : null
+
+  if (!rawDaily) throw new Error("A API não retornou os dados diários do dashboard.")
 
   const daily = rawDaily
     .map((entry) => {
-      const created = Number(
-        entry?.created
-        ?? Number(entry?.scheduled || 0)
-        + Number(entry?.confirmed || 0)
-        + Number(entry?.completed || 0)
-        + Number(entry?.cancelled || 0),
+      const created = entry?.created ?? (
+        entry?.scheduled != null && entry?.confirmed != null && entry?.completed != null && entry?.cancelled != null
+          ? Number(entry.scheduled) + Number(entry.confirmed) + Number(entry.completed) + Number(entry.cancelled)
+          : null
       )
+      if (!entry?.date || created == null || entry.completed == null || entry.cancelled == null) {
+        throw new Error("A API retornou dados diários incompletos para o dashboard.")
+      }
+
+      const values = [created, entry.completed, entry.cancelled].map(Number)
+      if (values.some((value) => !Number.isFinite(value)) || Number.isNaN(parseApiDate(entry.date).getTime())) {
+        throw new Error("A API retornou dados diários inválidos para o dashboard.")
+      }
 
       return {
-        date: entry?.date,
-        created,
-        completed: Number(entry?.completed || 0),
-        cancelled: Number(entry?.cancelled || 0),
+        date: entry.date,
+        created: values[0],
+        completed: values[1],
+        cancelled: values[2],
       }
     })
-    .filter((entry) => entry.date)
 
   const sortedDaily = [...daily].sort((a, b) => parseApiDate(a.date) - parseApiDate(b.date))
   const cancelledTotal = sortedDaily.reduce((total, item) => total + item.cancelled, 0)
-  const totalAppointments = Number(response?.kpis?.totalAppointments)
-  const completedRevenue = Number(response?.kpis?.completedRevenue)
-  const cancellationRate = Number(response?.kpis?.cancellationRate)
+  const completedRevenue = response?.kpis?.completedRevenue == null ? null : Number(response.kpis.completedRevenue)
+  const cancellationRate = response?.kpis?.cancellationRate == null ? null : Number(response.kpis.cancellationRate)
+
+  if (!Number.isFinite(completedRevenue) || !Number.isFinite(cancellationRate)) {
+    throw new Error("A API retornou indicadores incompletos para o dashboard.")
+  }
 
   const busiestDay = sortedDaily.reduce((current, day) => (
     !current || day.created > current.created ? day : current
   ), null)
 
   return {
-    adminName: response?.adminName || "Juliana",
+    adminName: response?.adminName || "",
     startDate: response?.startDate || period.startDate,
     endDate: response?.endDate || period.endDate,
-    periodDays: sortedDaily.length || 15,
+    periodDays: sortedDaily.length,
     daily: sortedDaily,
-    totalAppointments: Number.isFinite(totalAppointments)
-      ? totalAppointments
-      : sortedDaily.reduce((total, item) => total + item.created, 0),
-    completedRevenue: Number.isFinite(completedRevenue) ? completedRevenue : 0,
-    cancellationRate: Number.isFinite(cancellationRate) ? cancellationRate : 0,
+    completedRevenue,
+    cancellationRate,
     cancelledTotal,
     busiestDay,
   }
@@ -273,14 +278,14 @@ export function AdminDashboard() {
             <p className={styles.eyebrow}>SEU NEGÓCIO, EM PERSPECTIVA</p>
             <h1>Dashboard administrativo</h1>
             {!isLoading && !errorMessage && dashboard && (
-              <p className={styles.greeting}>Olá, {dashboard.adminName.split(" ")[0]}. Um olhar sobre os seus últimos 15 dias.</p>
+              <p className={styles.greeting}>{dashboard.adminName ? `Olá, ${dashboard.adminName.split(" ")[0]}. ` : ""}Um olhar sobre os seus últimos 15 dias.</p>
             )}
           </div>
           {!isLoading && !errorMessage && dashboard && (
             <article className={styles.profile} aria-label="Perfil administrador">
               <span className={styles.icon}><UserIcon /></span>
               <span>
-                <b>{dashboard.adminName.split(" ")[0]}</b>
+                <b>{dashboard.adminName ? dashboard.adminName.split(" ")[0] : "Perfil administrativo"}</b>
                 <small>Administradora</small>
               </span>
               <i aria-hidden="true" />
@@ -294,7 +299,6 @@ export function AdminDashboard() {
             <section className={styles.overview} aria-label="Visão geral">
               <div className={styles.sectionHeading}>
                 <h2><span aria-hidden="true" />Visão geral</h2>
-                <p className={styles.badge}>Dados demonstrativos</p>
               </div>
               <div className={styles.periodControls}>
                 <button type="button" aria-label="Período anterior" onClick={() => shiftPeriod(-15)}>‹</button>
@@ -363,10 +367,14 @@ export function AdminDashboard() {
               </div>
 
               <div className={styles.chartCanvas}>
-                <canvas ref={chartRef} aria-label="Gráfico de linha de agendamentos" role="img" />
+                {chartDaily.length > 0 ? (
+                  <canvas ref={chartRef} aria-label="Gráfico de linha de agendamentos" role="img" />
+                ) : (
+                  <p role="status">Nenhum dado diário disponível para este período.</p>
+                )}
               </div>
 
-              <p className={styles.chartHint}>Passe o mouse ou toque no gráfico para ver os detalhes.</p>
+              {chartDaily.length > 0 && <p className={styles.chartHint}>Passe o mouse ou toque no gráfico para ver os detalhes.</p>}
 
               <button className={styles.tableToggle} type="button" onClick={() => setShowTable((current) => !current)}>
                 {showTable ? "Ocultar tabela" : "Ver dados em tabela"} <ArrowUpRightIcon />
@@ -374,7 +382,7 @@ export function AdminDashboard() {
 
               {showTable && (
                 <div className={styles.tableWrap}>
-                  <p>{`Agendamentos demonstrativos · ${chartDaily[0] ? formatShortDate(chartDaily[0].date) : "--/--"} — ${chartDaily.at(-1) ? formatShortDate(chartDaily.at(-1).date) : "--/--"}`}</p>
+                  <p>{`Agendamentos · ${chartDaily[0] ? formatShortDate(chartDaily[0].date) : "--/--"} — ${chartDaily.at(-1) ? formatShortDate(chartDaily.at(-1).date) : "--/--"}`}</p>
                   <table>
                     <thead>
                       <tr>
@@ -407,7 +415,6 @@ export function AdminDashboard() {
             </section>
 
             <p className={styles.notice}>
-              Visualização demonstrativa. Os indicadores não estão conectados aos agendamentos do protótipo.
               Criados e concluídos são contagens independentes por dia.
             </p>
           </>

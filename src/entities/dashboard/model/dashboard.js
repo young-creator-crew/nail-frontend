@@ -1,5 +1,4 @@
 const DAY_MS = 24 * 60 * 60 * 1000
-const DEMO_TICKET = 75
 
 function normalizeDailyEntry(entry) {
   if (!entry || !entry.date) {
@@ -19,11 +18,11 @@ export function normalizeDashboardData(response) {
   }
 
   const data = {
-    adminName: response.adminName || "Juliana",
+    adminName: response.adminName || "",
     cancelled: Number(response.cancelled),
     previousCancelled: Number(response.previousCancelled),
     completed: Number(response.completed),
-    averageTicket: Number(response.averageTicket || DEMO_TICKET),
+    averageTicket: Number(response.averageTicket ?? NaN),
     daily: response.daily.map(normalizeDailyEntry),
   }
 
