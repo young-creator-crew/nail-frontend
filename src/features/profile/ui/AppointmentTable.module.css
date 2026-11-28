@@ -1,0 +1,234 @@
+.heading,
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.heading {
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.title h2 {
+  margin: 0;
+  font-family: "Prata", serif;
+  font-size: clamp(22px, 2vw, 26px);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.count {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-action-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.schedule {
+  min-width: 200px;
+  min-height: 48px;
+  justify-content: space-between;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.empty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+}
+
+.calendar {
+  display: grid;
+  flex: 0 0 56px;
+  place-items: center;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-action-primary);
+}
+
+.calendar svg {
+  width: 24px;
+  height: 24px;
+}
+
+.emptyText {
+  flex: 1 1 300px;
+}
+
+.emptyText h3 {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.emptyText p {
+  margin-top: 12px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.tablePanel {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.table th {
+  padding: 14px 24px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.table td {
+  padding: 24px;
+}
+
+.table tbody tr + tr {
+  border-top: 1px solid var(--color-border);
+}
+
+.table strong {
+  font-weight: 700;
+}
+
+.time {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+}
+
+.status {
+  display: inline-block;
+  min-width: 120px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-action-primary);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.cancelled {
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+}
+
+.actionCell {
+  position: relative;
+  width: 64px;
+}
+
+.more {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-action-primary);
+  font-size: 24px;
+}
+
+.more:focus-visible {
+  outline: 2px solid var(--color-action-primary);
+  outline-offset: 3px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .empty {
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px;
+  }
+
+  .emptyText {
+    flex-basis: calc(100% - 76px);
+  }
+
+  .empty .schedule {
+    width: 100%;
+  }
+
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+  }
+
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .table tr {
+    padding: 20px;
+  }
+
+  .table td {
+    padding: 8px 0;
+  }
+
+  .table td[data-label] {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  .table td[data-label]::before {
+    content: attr(data-label);
+    color: var(--color-text-secondary);
+    font-size: 12px;
+  }
+
+  .table .actionCell {
+    width: 100%;
+  }
+
+  .more {
+    margin-left: auto;
+  }
+
+  .status {
+    min-width: 0;
+  }
+}

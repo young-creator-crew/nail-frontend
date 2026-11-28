@@ -5,7 +5,7 @@ import { AddService } from "../pages/my-services/AddService"
 import { Cadastro } from "../pages/cadastro/Cadastro"
 import { EditService } from "../pages/my-services/EditService"
 import { MyServices } from "../pages/my-services/MyServices"
-import { Perfil } from "../pages/perfil/Perfil"
+import { ClientProfile } from "../pages/Perfil/ClientProfile"
 import { Home } from "../pages/home/Home"
 import { Login } from "../pages/login/Login"
 import { ServicesPage } from "../pages/services/ui/ServicesPage"
@@ -17,7 +17,7 @@ describe("application routes and personas", () => {
     ["/servicos", ServicesPage, "visitor"],
     ["/entrar", Login, "visitor"],
     ["/cadastro", Cadastro, "visitor"],
-    ["/perfil", Perfil, "client"],
+    ["/perfil", ClientProfile, "client"],
     ["/admin", AdminAgenda, "admin"],
     ["/admin/agenda", AdminAgenda, "admin"],
     ["/admin/dashboard", AdminDashboard, "admin"],

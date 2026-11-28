@@ -1,0 +1,114 @@
+.form {
+  display: grid;
+  gap: 24px;
+}
+
+.description {
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.input {
+  min-height: 56px;
+  border-radius: 12px;
+}
+
+.help {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.primary,
+.safe,
+.danger,
+.outlineDanger,
+.secondary {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.primary {
+  justify-content: space-between;
+}
+
+.safe {
+  background: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.safe:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 85%, var(--color-background-primary));
+}
+
+.danger,
+.outlineDanger:hover:not(:disabled) {
+  background: var(--color-danger);
+  color: var(--color-text-on-danger);
+}
+
+.outlineDanger {
+  min-height: 44px;
+  border: 1px solid var(--color-danger);
+  background: transparent;
+  color: var(--color-danger);
+}
+
+.secondary {
+  min-height: 40px;
+  background: transparent;
+  color: var(--color-action-primary);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--color-surface);
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.summary,
+.warning {
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.summary {
+  background: var(--color-surface);
+}
+
+.summary p {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+}
+
+.warning {
+  background: var(--color-danger-surface);
+  color: var(--color-danger);
+}
+
+.warning p {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 767px) {
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}

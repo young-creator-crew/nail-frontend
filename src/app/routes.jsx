@@ -7,6 +7,7 @@ import { AddService } from "../pages/my-services/AddService"
 import { EditService } from "../pages/my-services/EditService"
 import { MyServices } from "../pages/my-services/MyServices"
 import { Perfil } from "../pages/perfil/Perfil"
+import { ClientProfile } from "../pages/Perfil/ClientProfile"
 import { Home } from "../pages/home/Home"
 import { Login } from "../pages/login/Login"
 import { ServiceDetailsPage } from "../pages/service-details/ui/ServiceDetailsPage"
@@ -34,7 +35,9 @@ export function getRoute(pathname) {
   if (path === "/entrar") {
     return { Page: Login, role: "visitor", shell: "standalone" }
   }
-  if (path === "/perfil") return { Page: Perfil, role: "client" }
+  if (path === "/perfil") {
+    return { Page: ClientProfile, role: "client", shell: "standalone" }
+  }
   if (path === "/admin") return { Page: AdminAgenda, role: "admin" }
   if (path === "/admin/dashboard") return { Page: AdminDashboard, role: "admin" }
   if (path === "/admin/agenda") return { Page: AdminAgenda, role: "admin" }
