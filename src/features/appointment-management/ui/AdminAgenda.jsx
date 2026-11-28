@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
 import { Input } from "../../../shared/ui/text-input/Input"
-import { getAdminAppointments } from "../../../entities/appointment/api/appointmentApi"
 import { CalendarIcon } from "../../../shared/ui/icons/Icons"
 import styles from "./AdminAgenda.module.css"
 
@@ -11,17 +10,6 @@ function today() {
 
 export function AdminAgenda() {
   const [date, setDate] = useState(today)
-  const [feedback, setFeedback] = useState("")
-
-  const handleDateChange = async (event) => {
-    const selectedDate = event.target.value
-    setDate(selectedDate)
-    try {
-      await getAdminAppointments(selectedDate)
-    } catch (error) {
-      setFeedback(error instanceof Error ? error.message : "Não foi possível carregar a agenda.")
-    }
-  }
 
   return (
     <main className={styles.page}>
@@ -32,13 +20,12 @@ export function AdminAgenda() {
           <ButtonAction href="/admin/meus-servicos">Gerenciar serviços</ButtonAction>
         </div>
         <div className={styles.dateField}>
-          <Input label="Escolha uma data" type="date" value={date} onChange={handleDateChange} />
+          <Input label="Escolha uma data" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
         </div>
         <section className={styles.empty} aria-live="polite">
           <CalendarIcon />
-          <p>Nenhum agendamento nesta data.</p>
+          <p>A agenda administrativa ainda não está integrada ao backend.</p>
         </section>
-        {feedback && <p className={styles.feedback} role="status">{feedback}</p>}
       </div>
     </main>
   )
