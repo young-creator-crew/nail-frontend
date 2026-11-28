@@ -3,6 +3,7 @@ import { getServiceById } from "../../../entities/service/api/serviceApi"
 import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
 import { ButtonBack } from "../../../shared/ui/button-back/ButtonBack"
 import { CalendarIcon } from "../../../shared/ui/icons/Icons"
+import { appointmentsEnabled } from "../../../shared/api/services/appointmentApi"
 import styles from "./ServiceDetailsPage.module.css"
 
 export function ServiceDetailsPage({ serviceId, isAdmin = false }) {
@@ -76,14 +77,20 @@ export function ServiceDetailsPage({ serviceId, isAdmin = false }) {
               <p className={styles.bookingDescription}>
                 {isAdmin
                   ? "Atualize os dados deste serviço no painel administrativo."
-                  : "O agendamento ainda não está integrado ao backend."}
+                  : !service.active
+                    ? "Este serviço não está disponível para agendamento."
+                    : appointmentsEnabled
+                      ? "Escolha uma data e veja os horários disponíveis para o seu atendimento."
+                      : "O agendamento ainda não está integrado ao backend."}
               </p>
               <ButtonAction
                 className={styles.bookingButton}
                 href={isAdmin
                   ? `/admin/meus-servicos/editar?id=${service.id}`
-                  : undefined}
-                disabled={!isAdmin}
+                  : appointmentsEnabled && service.active
+                    ? `/agendamento?serviceId=${encodeURIComponent(service.idNailService ?? service.id)}`
+                    : undefined}
+                disabled={!isAdmin && (!appointmentsEnabled || !service.active)}
                 icon={isAdmin ? "✎" : <CalendarIcon />}
               >
                 {isAdmin ? "Editar serviço" : "Agendar este serviço"}

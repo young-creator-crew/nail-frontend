@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { getServices } from "../../entities/service/api/serviceApi"
+import { appointmentsEnabled } from "../../shared/api/services/appointmentApi"
 import { ArrowUpRightIcon } from "../../shared/ui/icons/Icons"
 import { ButtonAction } from "../../shared/ui/button-action/ButtonAction"
 import { MarketingFooter } from "../../widgets/marketing-footer/MarketingFooter"
@@ -22,7 +23,9 @@ const faqItems = [
   },
   {
     question: "Preciso de uma conta para continuar?",
-    answer: "Você pode conhecer o catálogo sem entrar. O agendamento ainda não está disponível.",
+    answer: appointmentsEnabled
+      ? "Você pode conhecer o catálogo sem entrar. Para confirmar um agendamento, entre na sua conta."
+      : "Você pode conhecer o catálogo sem entrar. O agendamento ainda não está disponível.",
   },
 ]
 
@@ -309,7 +312,7 @@ export function Home() {
             </li>
             <li>
               <span>03</span>
-              <div><h3>Reserve um tempo para você</h3><p>O agendamento estará disponível após a integração com o backend.</p></div>
+              <div><h3>Reserve um tempo para você</h3><p>{appointmentsEnabled ? "Escolha uma data e um horário disponível para seu atendimento." : "O agendamento estará disponível após a integração com o backend."}</p></div>
             </li>
           </ol>
         </section>

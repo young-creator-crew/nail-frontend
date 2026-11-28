@@ -3,6 +3,7 @@ import { loadClientProfile, resolveProfileUserId, saveClientProfile } from "../.
 import { AppointmentTable } from "../../features/profile/ui/AppointmentTable"
 import { ProfileDialogs } from "../../features/profile/ui/ProfileDialogs"
 import { clearSessionUser, getSessionUser } from "../../shared/auth/session"
+import { appointmentsEnabled, cancelAppointment, listAppointments, rescheduleAppointment } from "../../shared/api/services/appointmentApi"
 import { ButtonAction } from "../../shared/ui/button-action/ButtonAction"
 import { UserIcon } from "../../shared/ui/icons/Icons"
 import { MarketingHeader } from "../../widgets/marketing-header/MarketingHeader"
@@ -32,6 +33,8 @@ export function ClientProfile() {
   const [overlay, setOverlay] = useState(null)
   const [saving, setSaving] = useState(false)
   const [feedback, setFeedback] = useState("")
+  const [appointmentState, setAppointmentState] = useState({ userId: null, version: -1, upcoming: null, history: null, error: "" })
+  const [appointmentVersion, setAppointmentVersion] = useState(0)
   const returnFocusRef = useRef(null)
   const sessionIdRef = useRef(userId)
 
@@ -77,6 +80,26 @@ export function ClientProfile() {
     return () => controller.abort()
   }, [userId, reload])
 
+  useEffect(() => {
+    if (!appointmentsEnabled || !userId) return
+    const controller = new AbortController()
+    Promise.all([
+      listAppointments(userId, "upcoming", controller.signal),
+      listAppointments(userId, "history", controller.signal),
+    ]).then(([upcoming, history]) => {
+      if (!controller.signal.aborted) setAppointmentState({ userId, version: appointmentVersion, upcoming, history, error: "" })
+    }).catch((error) => {
+      if (!controller.signal.aborted) setAppointmentState({
+        userId, version: appointmentVersion, upcoming: null, history: null,
+        error: error instanceof Error ? error.message : "Não foi possível carregar os agendamentos.",
+      })
+    })
+    return () => controller.abort()
+  }, [userId, appointmentVersion])
+
+  const appointmentCurrent = appointmentState.userId === userId && appointmentState.version === appointmentVersion
+  const appointmentsLoading = appointmentsEnabled && userId && !appointmentCurrent
+
   const openOverlay = (type, appointment, trigger) => {
     if (type !== "manage" && !appointment?.id) {
       setFeedback("Não foi possível identificar o agendamento.")
@@ -108,6 +131,23 @@ export function ClientProfile() {
   const logout = () => {
     clearSessionUser()
     window.location.assign("/entrar")
+  }
+
+  const changeAppointment = async (type, values) => {
+    if (!overlay?.appointment?.id || resolveProfileUserId(getSessionUser()) !== userId) {
+      throw new Error("A sessão mudou. Entre novamente para continuar.")
+    }
+    setSaving(true)
+    try {
+      if (type === "cancel") await cancelAppointment(overlay.appointment.id)
+      else await rescheduleAppointment(overlay.appointment.id, values)
+      if (resolveProfileUserId(getSessionUser()) !== userId) throw new Error("A sessão mudou durante a operação. Confira o agendamento novamente.")
+      setOverlay(null)
+      setFeedback(type === "cancel" ? "Agendamento cancelado." : "Agendamento remarcado.")
+      setAppointmentVersion((current) => current + 1)
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -166,14 +206,23 @@ export function ClientProfile() {
             </section>
             {feedback && <p className={styles.feedback} role="status">{feedback}</p>}
             <div className={styles.appointments}>
-              <AppointmentTable
-                appointments={null}
-                onAction={openOverlay}
-                activeAppointmentId={overlay?.type === "menu" ? overlay.appointment.id : null}
-                onCloseActions={closeOverlay}
-                returnFocusRef={returnFocusRef}
-              />
-              <AppointmentTable appointments={null} history />
+              {appointmentsLoading ? <p role="status">Carregando agendamentos...</p> : appointmentCurrent && appointmentState.error ? (
+                <section className={styles.state}>
+                  <p className={styles.error} role="alert">{appointmentState.error}</p>
+                  <ButtonAction className={styles.primary} onClick={() => setAppointmentVersion((current) => current + 1)}>Tentar novamente</ButtonAction>
+                </section>
+              ) : (
+                <>
+                  <AppointmentTable
+                    appointments={appointmentsEnabled && appointmentCurrent ? appointmentState.upcoming : null}
+                    onAction={openOverlay}
+                    activeAppointmentId={overlay?.type === "menu" ? overlay.appointment.id : null}
+                    onCloseActions={closeOverlay}
+                    returnFocusRef={returnFocusRef}
+                  />
+                  <AppointmentTable appointments={appointmentsEnabled && appointmentCurrent ? appointmentState.history : null} history />
+                </>
+              )}
             </div>
           </>
         )}
@@ -187,6 +236,8 @@ export function ClientProfile() {
           onClose={closeOverlay}
           onBack={(type) => setOverlay((current) => ({ ...current, type }))}
           onSave={saveProfile}
+          onCancel={appointmentsEnabled ? () => changeAppointment("cancel") : undefined}
+          onReschedule={appointmentsEnabled ? (values) => changeAppointment("reschedule", values) : undefined}
           busy={saving}
           returnFocusRef={returnFocusRef}
         />

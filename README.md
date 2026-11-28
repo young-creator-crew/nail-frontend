@@ -43,3 +43,17 @@ npm run dev
 npm run build
 npm run lint
 ```
+
+## Integração provisória de agendamentos
+
+O frontend permite consultar, criar, remarcar e cancelar agendamentos usando um
+contrato provisório, ainda não confirmado para o backend definitivo. A integração
+fica desativada por padrão e em produção; quando ativada, aceita somente uma API
+local e verifica sua identidade antes de cada operação.
+
+Para habilitá-la em desenvolvimento, configure `VITE_APPOINTMENTS_ENABLED`,
+`VITE_APPOINTMENTS_API_BASE_URL`, `VITE_APPOINTMENTS_HEALTH_PATH` e
+`VITE_APPOINTMENTS_API_IDENTITY` junto de `VITE_API_BASE_URL`. Os dois endereços
+devem corresponder e a verificação de saúde deve retornar um campo `service`
+igual à identidade configurada. O caminho dos agendamentos pode ser ajustado por
+`VITE_API_APPOINTMENTS_PATH`.
