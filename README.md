@@ -19,15 +19,16 @@ As camadas podem ser preenchidas conforme as funcionalidades forem desenvolvidas
 
 ## Página Meus serviços
 
-A página `/meus-servicos` carrega os serviços reais de `GET /procedures` na API.
+A página `/admin/meus-servicos` carrega os serviços de `GET /services/admin` na API.
 Configure `VITE_API_BASE_URL` no arquivo `.env` (veja `.env.example`) com a URL
 base do backend, por exemplo `http://localhost:8080`. A resposta precisa ser uma
-lista com `id`, `name`, `description`, `price`, `estimatedDurationMinutes` e
-`imageUrl`.
+lista com `idNailService`, `serviceName`, `serviceDescription`, `options`
+(com `price` e `durationMinutes`) e `photoUrl`.
 
-Os formulários usam `POST /procedures` com `multipart/form-data` (campos
-`name`, `description`, `price`, `estimatedDurationMinutes` e `image`), `GET` e
-`PUT /procedures/{id}`, `PUT /procedures/{id}/image` e `DELETE /procedures/{id}`.
+Os formulários usam `POST /services` e `PUT /services/{id}` com
+`multipart/form-data` (campo `service` contendo JSON e imagem opcional `foto`).
+A edição carrega `GET /services/{id}`; a desativação usa
+`PATCH /services/{id}/deactivate`.
 A duração continua obrigatória conforme a validação da API.
 As telas administrativas usam o prefixo `/admin`: `/admin`,
 `/admin/agenda`, `/admin/servicos`, `/admin/perfil`,
