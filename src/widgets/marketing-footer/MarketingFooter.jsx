@@ -22,7 +22,7 @@ export function MarketingFooter({
   tagline = "Cuidado que se vê. Beleza que se sente.",
   navigationGroups = defaultNavigationGroups,
   legalLabel = "Nicole Nails | Agendamentos",
-  notice = "Protótipo interativo · Dados demonstrativos",
+  notice,
 }) {
   return (
     <footer className={styles.footer}>
@@ -47,7 +47,7 @@ export function MarketingFooter({
       <div className={styles.footerLegal}>
         <div className={styles.footerLegalContent}>
           <span>{legalLabel}</span>
-          <span>{notice}</span>
+          {notice && <span>{notice}</span>}
         </div>
       </div>
     </footer>

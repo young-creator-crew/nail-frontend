@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
 import { getServices } from "../../entities/service/api/serviceApi"
-import { getServiceImage } from "../../entities/service/model/mock-service-images"
 import { ArrowUpRightIcon } from "../../shared/ui/icons/Icons"
 import { ButtonAction } from "../../shared/ui/button-action/ButtonAction"
 import { MarketingFooter } from "../../widgets/marketing-footer/MarketingFooter"
@@ -10,20 +9,7 @@ import styles from "./Home.module.css"
 const heroImage =
   "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=85"
 
-const galleryFallbacks = [
-  {
-    src: "https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=900&q=85",
-    alt: "Manicure clássica em tons suaves",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=900&q=85",
-    alt: "Unhas alongadas com decoração delicada",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1604902396830-aca29e19b067?auto=format&fit=crop&w=900&q=85",
-    alt: "Nail art colorida",
-  },
-]
+const introImage = "https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=900&q=85"
 
 const faqItems = [
   {
@@ -36,7 +22,7 @@ const faqItems = [
   },
   {
     question: "Preciso de uma conta para continuar?",
-    answer: "Você pode conhecer o catálogo sem entrar. O fluxo atual permite escolher uma data e um horário para o atendimento.",
+    answer: "Você pode conhecer o catálogo sem entrar. O agendamento ainda não está disponível.",
   },
 ]
 
@@ -81,7 +67,7 @@ function FlowerDecoration({ className }) {
 }
 
 function HomeServiceCard({ service }) {
-  const image = getServiceImage(service)
+  const image = service.photoUrl
 
   return (
     <a
@@ -161,14 +147,12 @@ export function Home() {
   const galleryImages = useMemo(() => {
     const servicesWithImages = services
       .map((service) => ({
-        src: getServiceImage(service),
+        src: service.photoUrl,
         alt: service.serviceName || "Inspiração de unhas",
       }))
       .filter((image) => image.src)
 
-    return galleryFallbacks.map((fallback, index) => (
-      servicesWithImages[index] ?? fallback
-    ))
+    return servicesWithImages.slice(0, 3)
   }, [services])
 
   return (
@@ -222,7 +206,7 @@ export function Home() {
           <div className={styles.introContent}>
             <img
               className={styles.introImage}
-              src={galleryFallbacks[0].src}
+              src={introImage}
               alt="Mãos com manicure em tons suaves"
               loading="lazy"
             />
@@ -280,7 +264,7 @@ export function Home() {
               </div>
             )}
             <p className={styles.panelNote}>
-              Os valores seguem as opções cadastradas. Serviços sem foto usam uma imagem de referência.
+              Os valores seguem as opções cadastradas.
             </p>
           </div>
         </section>
@@ -297,6 +281,9 @@ export function Home() {
               </ButtonAction>
             </div>
           </div>
+          {isLoading && <p className={styles.status} role="status">Carregando inspirações...</p>}
+          {!isLoading && errorMessage && <p className={styles.statusError} role="alert">Não foi possível carregar as inspirações.</p>}
+          {!isLoading && !errorMessage && galleryImages.length === 0 && <p className={styles.status}>Nenhuma foto de serviço disponível no momento.</p>}
           <div className={styles.gallery}>
             {galleryImages.map((image, index) => (
               <figure
@@ -304,7 +291,7 @@ export function Home() {
                 key={`${image.src}-${index}`}
               >
                 <img src={image.src} alt={image.alt} loading="lazy" />
-                <figcaption>{`0${index + 1} / ${["Contraste & personalidade", "Delicadeza que alonga", "Cor para sair do comum"][index]}`}</figcaption>
+                <figcaption>{`0${index + 1} / ${image.alt}`}</figcaption>
               </figure>
             ))}
           </div>
@@ -322,7 +309,7 @@ export function Home() {
             </li>
             <li>
               <span>03</span>
-              <div><h3>Reserve um tempo para você</h3><p>Escolha uma data e um horário no fluxo de agendamento.</p></div>
+              <div><h3>Reserve um tempo para você</h3><p>O agendamento estará disponível após a integração com o backend.</p></div>
             </li>
           </ol>
         </section>

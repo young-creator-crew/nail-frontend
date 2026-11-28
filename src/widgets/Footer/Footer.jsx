@@ -11,7 +11,6 @@ export function Footer() {
 
         <p className={styles.tagline}>Cuidado que se vê. Beleza que se sente.</p>
 
-        <p className={styles.notice}>Protótipo interativo · Dados demonstrativos</p>
       </div>
     </footer>
   )

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
 import { ServiceCard } from "../../../entities/service/ui/ServiceCard"
 import { getAdminServices } from "../../../entities/service/api/serviceApi"
-import { getServiceImage } from "../../../entities/service/model/mock-service-images"
 import styles from "./MyServices.module.css"
 
 export function MyServices() {
@@ -75,7 +74,7 @@ export function MyServices() {
               <ServiceCard
                 description={service.serviceDescription}
                 href={`/admin/meus-servicos/editar?id=${service.idNailService}`}
-                image={getServiceImage(service)}
+                image={service.photoUrl}
                 isAdmin
                 key={service.idNailService}
                 name={service.serviceName}

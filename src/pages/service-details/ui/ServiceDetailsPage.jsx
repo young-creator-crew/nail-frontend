@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { getServiceById } from "../../../entities/service/api/serviceApi"
-import { getServiceImage } from "../../../entities/service/model/mock-service-images"
 import { ButtonAction } from "../../../shared/ui/button-action/ButtonAction"
 import { ButtonBack } from "../../../shared/ui/button-back/ButtonBack"
 import { CalendarIcon } from "../../../shared/ui/icons/Icons"
@@ -54,11 +53,11 @@ export function ServiceDetailsPage({ serviceId, isAdmin = false }) {
         </ButtonBack>
 
         <article className={styles.service}>
-          <img
-            className={styles.image}
-            src={getServiceImage(service)}
-            alt={service.serviceName}
-          />
+          {service.photoUrl ? (
+            <img className={styles.image} src={service.photoUrl} alt={service.serviceName} />
+          ) : (
+            <div className={styles.image} aria-hidden="true" />
+          )}
 
           <div className={styles.details}>
             <p className={styles.category}>{service.active ? "Serviço disponível" : "Serviço inativo"}</p>
@@ -77,13 +76,14 @@ export function ServiceDetailsPage({ serviceId, isAdmin = false }) {
               <p className={styles.bookingDescription}>
                 {isAdmin
                   ? "Atualize os dados deste serviço no painel administrativo."
-                  : "Escolha uma data e veja os horários disponíveis para o seu atendimento."}
+                  : "O agendamento ainda não está integrado ao backend."}
               </p>
               <ButtonAction
                 className={styles.bookingButton}
                 href={isAdmin
                   ? `/admin/meus-servicos/editar?id=${service.id}`
                   : undefined}
+                disabled={!isAdmin}
                 icon={isAdmin ? "✎" : <CalendarIcon />}
               >
                 {isAdmin ? "Editar serviço" : "Agendar este serviço"}

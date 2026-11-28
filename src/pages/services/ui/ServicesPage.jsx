@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
 import { getAdminServices, getServices } from "../../../entities/service/api/serviceApi"
-import { getServiceImage } from "../../../entities/service/model/mock-service-images"
 import { ServiceCatalogFilter } from "../../../features/service-catalog-filter/ui/ServiceCatalogFilter"
 import { ServiceCard } from "../../../entities/service/ui/ServiceCard"
 import styles from "./ServicesPage.module.css"
@@ -65,7 +64,7 @@ export function ServicesPage({ isAdmin = false }) {
               <ServiceCard
                 description={service.serviceDescription}
                 href={`${isAdmin ? "/admin" : ""}/servicos/${service.idNailService}`}
-                image={getServiceImage(service)}
+                image={service.photoUrl}
                 imageAlt={service.serviceName}
                 key={service.idNailService}
                 name={service.serviceName}
