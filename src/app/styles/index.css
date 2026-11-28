@@ -12,6 +12,9 @@
   --color-text-secondary: #67665f;
   --color-border: #e6e5da;
   --color-control-border: #cccbbf;
+  --color-danger: #b42336;
+  --color-danger-surface: #fff0f1;
+  --color-text-on-danger: #ffffff;
 }
 
 [data-theme="dark"] {
@@ -26,6 +29,9 @@
   --color-text-secondary: #c1bdc3;
   --color-border: #414141;
   --color-control-border: #818181;
+  --color-danger: #ff929f;
+  --color-danger-surface: #3a2027;
+  --color-text-on-danger: #141414;
 }
 
 *,

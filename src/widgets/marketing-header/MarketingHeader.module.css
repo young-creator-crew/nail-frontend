@@ -125,6 +125,30 @@
   display: none;
 }
 
+.logout {
+  display: grid;
+  flex: 0 0 40px;
+  place-items: center;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-action-primary);
+}
+
+.logout svg {
+  width: 24px;
+  height: 24px;
+}
+
+.logout:focus-visible {
+  outline: 2px solid var(--color-action-primary);
+  outline-offset: 3px;
+}
+
+.logout:disabled {
+  opacity: 0.5;
+}
+
 @media (max-width: 1023px) {
   .content {
     min-height: 64px;

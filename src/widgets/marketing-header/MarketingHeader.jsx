@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from "react"
 import { ButtonAction } from "../../shared/ui/button-action/ButtonAction"
-import { MoonIcon } from "../../shared/ui/icons/Icons"
+import { LogoutIcon, MoonIcon } from "../../shared/ui/icons/Icons"
 import styles from "./MarketingHeader.module.css"
 
 const defaultNavigationLinks = [
@@ -29,6 +29,8 @@ export function MarketingHeader({
   loginLabel = "Entrar",
   actionHref = "/cadastro",
   actionLabel = "Criar conta",
+  onLogout,
+  logoutDisabled = false,
 }) {
   const navigationId = useId()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -90,9 +92,15 @@ export function MarketingHeader({
             {theme === "light" ? <MoonIcon /> : <span aria-hidden="true">☀</span>}
           </button>
           <a className={styles.loginLink} href={loginHref}>{loginLabel}</a>
-          <ButtonAction className={styles.createAccount} href={actionHref}>
-            {actionLabel}
-          </ButtonAction>
+          {onLogout ? (
+            <button className={styles.logout} type="button" aria-label="Sair da conta" onClick={onLogout} disabled={logoutDisabled}>
+              <LogoutIcon />
+            </button>
+          ) : (
+            <ButtonAction className={styles.createAccount} href={actionHref}>
+              {actionLabel}
+            </ButtonAction>
+          )}
         </div>
       </div>
     </header>
