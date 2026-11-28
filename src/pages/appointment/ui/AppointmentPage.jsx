@@ -3,11 +3,12 @@ import { ButtonBack } from "../../../shared/ui/button-back/ButtonBack"
 import styles from "./AppointmentPage.module.css"
 
 export function AppointmentPage() {
+  const serviceId = new URLSearchParams(window.location.search).get("serviceId")
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        <ButtonBack className={styles.backLink} href="/servicos/nail-art">
-          Voltar ao serviço
+        <ButtonBack className={styles.backLink} href={serviceId ? `/servicos/${encodeURIComponent(serviceId)}` : "/servicos"}>
+          {serviceId ? "Voltar ao serviço" : "Voltar aos serviços"}
         </ButtonBack>
 
         <header className={styles.header}>
